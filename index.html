@@ -621,21 +621,7 @@ function renderResult(p){
 // Detect correct server URL (localhost on Mac, IP on iPhone)
 // BACKEND URL — automatically uses Railway URL when hosted on Firebase
 // Falls back to same-origin for local development
-const API_BASE = (() => {
-  // If a backend URL is configured (for Firebase hosting), use it
-  if (window.BACKEND_URL) return window.BACKEND_URL;
-  // If running on Firebase (not Railway), use the Railway backend
-  const host = window.location.hostname;
-  if (host.includes('web.app') || host.includes('firebaseapp.com')) {
-    // Firebase hosted — must use Railway backend
-    // This gets replaced automatically when you set up Firebase
-    return 'https://leica-price-search-production.up.railway.app';
-  }
-  // Local development or Railway — use same origin
-  const o = window.location.origin;
-  if (!o || o === 'null' || o === 'file://') return 'http://localhost:3747';
-  return o;
-})();
+const API_BASE = 'https://leica-price-search-production.up.railway.app';
 
 
 // ── RARITY DETECTION ─────────────────────────────────────────────────────
@@ -1046,7 +1032,7 @@ checkKeyStatus();
 
 
 // ── AUTH ─────────────────────────────────────────────────────────────────
-const AUTH_BASE = API_BASE; // Same backend for auth
+const AUTH_BASE = API_BASE;
 
 // Robust token storage — works on iPhone Safari in all modes
 const TOKEN_KEY = 'lpi_session';
