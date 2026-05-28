@@ -1053,7 +1053,7 @@ async function analyzeMat(){
     const productLabel = directMatch
       ? (directMatch.product+(directMatch.variant?" ("+directMatch.variant+")":""))
       : (loc||"Leica Produkt Mat.-Nr "+nr);
-    const d=await callAPI([{role:"user",content:"You are a Leica resale market expert. Material number: "+nr+" = "+productLabel+corrHint+"\n"+PSUFFIX}]);
+    const d=await callAPI([{role:"user",content:"You are a Leica resale market expert. Material number: "+nr+" = "+productLabel+corrHint+"\n"+PSUFFIX_STANDARD}]);
     if(!d)return;
     const p=parseJSON((d.content||[]).map(b=>b.text||"").join(""));
     if(!p||typeof p.mintPrice!=="number"||p.mintPrice<=0){showError("Materialnummer nicht erkannt.");return;}
