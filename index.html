@@ -212,6 +212,19 @@ header{background:#070707;border-bottom:1px solid #1A1A1A;padding:0 18px;positio
 .rarity-warning{background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.2);border-radius:4px;padding:10px 12px;font-size:.72rem;font-family:Arial,sans-serif;color:#FFC107;line-height:1.55;margin-top:12px}
 .serial-badge{display:inline-block;background:rgba(139,105,20,.2);border:1px solid rgba(139,105,20,.4);border-radius:3px;padding:3px 9px;font-size:.68rem;letter-spacing:.1em;color:#C8A97E;font-family:monospace;margin-left:6px}
 
+
+/* Reference images from corrections DB */
+#refImgSection{display:none;margin:10px 14px 0}
+.ref-img-card{background:#0D0D0D;border:1px solid #252525;border-radius:6px;padding:14px}
+.ref-img-lbl{font-size:.6rem;letter-spacing:.2em;color:#C8A97E;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.ref-img-lbl span{background:rgba(200,169,126,.15);padding:2px 8px;border-radius:2px;font-size:.62rem}
+.ref-img-name{font-size:.82rem;color:#888;font-family:Arial,sans-serif;margin-bottom:10px}
+.ref-imgs{display:flex;flex-wrap:wrap;gap:8px}
+.ref-imgs img{height:90px;width:auto;max-width:140px;object-fit:cover;border-radius:4px;border:1px solid #2A2A2A;cursor:pointer;transition:border-color .2s}
+.ref-imgs img:hover{border-color:#C8A97E}
+#imgLightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:1000;align-items:center;justify-content:center;cursor:pointer}
+#imgLightbox.open{display:flex}
+#imgLightbox img{max-width:92vw;max-height:92vh;object-fit:contain;border-radius:6px}
 </style>
 </head>
 <body>
@@ -349,6 +362,25 @@ header{background:#070707;border-bottom:1px solid #1A1A1A;padding:0 18px;positio
 
 <div id="infoBox"></div>
 <div id="errorBox"></div>
+
+<!-- Reference images from corrections DB -->
+<div id="refImgSection">
+  <div class="ref-img-card">
+    <div class="ref-img-lbl">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M15 4H1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zM8 12a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
+      REFERENZBILDER
+      <span>Verifiziert · All About Antik</span>
+    </div>
+    <div class="ref-img-name" id="refImgName"></div>
+    <div class="ref-imgs" id="refImgs"></div>
+    <p style="font-size:.65rem;color:#555;font-family:Arial,sans-serif;margin-top:8px">Vergleiche das vorliegende Produkt mit diesen verifizierten Referenzbildern.</p>
+  </div>
+</div>
+
+<!-- Image lightbox -->
+<div id="imgLightbox" onclick="this.classList.remove('open')">
+  <img id="imgLightboxSrc" src="" alt=""/>
+</div>
 
 <div id="results">
   <div class="result-header">
@@ -980,9 +1012,48 @@ async function analyzeMat(){
   if(!nr){showError("Bitte Materialnummer eingeben.");return;}
   hideError();hideInfo();document.getElementById("results").style.display="none";
   const btn=document.getElementById("analyzeMatBtn");btn.disabled=true;btn.textContent="…";
-  const loc=MAT_DB[nr];if(loc)showInfo("<strong>Erkannt:</strong> "+loc+" (Nr. "+nr+") — Analyse läuft …");
+
+  // Direct match in corrections DB
+  const directMatch = cachedCorrections.find(c=>{
+    if(!c) return false;
+    if(String(c.materialNr||"")===nr) return true;
+    if((c.materialNrAlt||[]).map(String).includes(nr)) return true;
+    return false;
+  });
+
+  const loc = directMatch
+    ? (directMatch.product+(directMatch.variant?" · "+directMatch.variant:""))
+    : MAT_DB[nr];
+
+  if(loc) showInfo("<strong>Erkannt:</strong> "+loc+" (Nr. "+nr+") — Analyse läuft …");
+
+  // Show reference images if available
+  if(directMatch && directMatch.images && directMatch.images.length) {
+    showReferenceImages(directMatch.images, directMatch.product+(directMatch.variant?" · "+directMatch.variant:""));
+  } else {
+    hideReferenceImages();
+  }
+
+  let corrHint = "";
+  if(directMatch){
+    corrHint += "\n\nKRITISCH — VERIFIZIERTE DATEN (Materialnummer "+nr+" ist in der All About Antik Datenbank):";
+    corrHint += "\nProdukt: "+directMatch.product+(directMatch.variant?" ("+directMatch.variant+")":"");
+    if(directMatch.variantDesc) corrHint += " — "+directMatch.variantDesc;
+    if(directMatch.materialNrAlt&&directMatch.materialNrAlt.length) corrHint += "\nAlternative Mat.-Nr: "+directMatch.materialNrAlt.join(", ");
+    if(directMatch.serialFrom) corrHint += "\nSeriennr: "+directMatch.serialFrom+(directMatch.serialTo?" – "+directMatch.serialTo:"");
+    if(directMatch.priceFrom) corrHint += "\nPrivatmarkt: "+directMatch.priceFrom.toLocaleString("de-DE")+(directMatch.priceTo?" – "+directMatch.priceTo.toLocaleString("de-DE"):"")+" EUR";
+    if(directMatch.mintPrice) corrHint += "\nReferenzpreis A-: "+directMatch.mintPrice.toLocaleString("de-DE")+" EUR";
+    if(directMatch.auctionLow) corrHint += "\nAuktion: "+directMatch.auctionLow.toLocaleString("de-DE")+" – "+directMatch.auctionHigh.toLocaleString("de-DE")+" EUR";
+    if(directMatch.notes) corrHint += "\nWICHTIG: "+directMatch.notes;
+    if(directMatch.source) corrHint += "\nQuelle: "+directMatch.source;
+    corrHint += "\n\nVerwende AUSSCHLIESSLICH diese Daten. productName muss exakt lauten: "+directMatch.product+(directMatch.variant?" ("+directMatch.variant+")":"");
+  }
+
   try{
-    const d=await callAPI([{role:"user",content:"You are a Leica resale market expert specializing in both standard used market and rare collectibles/auction items. Leica material number: "+nr+(loc?" ("+loc+")":"")+PSUFFIX_STANDARD}]);
+    const productLabel = directMatch
+      ? (directMatch.product+(directMatch.variant?" ("+directMatch.variant+")":""))
+      : (loc||"Leica Produkt Mat.-Nr "+nr);
+    const d=await callAPI([{role:"user",content:"You are a Leica resale market expert. Material number: "+nr+" = "+productLabel+corrHint+"\n"+PSUFFIX}]);
     if(!d)return;
     const p=parseJSON((d.content||[]).map(b=>b.text||"").join(""));
     if(!p||typeof p.mintPrice!=="number"||p.mintPrice<=0){showError("Materialnummer nicht erkannt.");return;}
@@ -991,34 +1062,6 @@ async function analyzeMat(){
   finally{btn.disabled=false;btn.textContent="SUCHEN";}
 }
 
-async function startCamera(){
-  try{
-    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:"environment"},width:{ideal:1280}}});
-    document.getElementById("video").srcObject=stream;
-    document.getElementById("videoWrap").style.display="block";
-    document.getElementById("previewImg").style.display="none";
-    document.getElementById("camBtnsMain").style.display="none";
-    document.getElementById("camBtnsLive").style.display="flex";
-    document.getElementById("camBtnsCapture").style.display="none";
-  }catch(e){showError("Kamera nicht verfügbar: "+e.message+"<br>Bitte Bild hochladen.");}
-}
-function stopCamera(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}document.getElementById("videoWrap").style.display="none";document.getElementById("camBtnsMain").style.display="flex";document.getElementById("camBtnsLive").style.display="none";}
-function shootPhoto(){
-  const v=document.getElementById("video"),c=document.getElementById("canvas");
-  c.width=v.videoWidth||1280;c.height=v.videoHeight||960;
-  c.getContext("2d").drawImage(v,0,0);
-  document.body.classList.add("flash");setTimeout(()=>document.body.classList.remove("flash"),200);
-  capturedMime="image/jpeg";capturedB64=c.toDataURL(capturedMime,.85).split(",")[1];
-  const img=document.getElementById("previewImg");img.src="data:"+capturedMime+";base64,"+capturedB64;img.style.display="block";
-  stopCamera();document.getElementById("camBtnsCapture").style.display="flex";document.getElementById("camBtnsMain").style.display="none";
-}
-function resetCamera(){capturedB64=null;document.getElementById("previewImg").style.display="none";document.getElementById("camBtnsCapture").style.display="none";document.getElementById("camBtnsMain").style.display="flex";document.getElementById("scanStatus").style.display="none";hideError();}
-function handleFileUpload(e){
-  const f=e.target.files[0];if(!f)return;capturedMime=f.type||"image/jpeg";
-  const r=new FileReader();
-  r.onload=ev=>{capturedB64=ev.target.result.split(",")[1];const img=document.getElementById("previewImg");img.src=ev.target.result;img.style.display="block";document.getElementById("camBtnsCapture").style.display="flex";document.getElementById("camBtnsMain").style.display="none";document.getElementById("scanStatus").style.display="none";};
-  r.readAsDataURL(f);e.target.value="";
-}
 async function analyzeImage(){
   if(!capturedB64){showError("Kein Bild vorhanden.");return;}
   hideError();hideInfo();document.getElementById("results").style.display="none";
@@ -1238,6 +1281,33 @@ function showApp() {
 document.getElementById("apiKeyInput").addEventListener("input",e=>{
   e.target.value=e.target.value.replace(/[\s\n\r]/g,'');
 });
+// ── REFERENCE IMAGES ──────────────────────────────────────────────────
+function showReferenceImages(images, productName) {
+  if(!images||!images.length) return;
+  const sec = document.getElementById("refImgSection");
+  const container = document.getElementById("refImgs");
+  const nameEl = document.getElementById("refImgName");
+  nameEl.textContent = productName || "";
+  container.innerHTML = "";
+  images.forEach(function(img) {
+    const im = document.createElement("img");
+    im.src = "data:"+img.mime+";base64,"+img.base64;
+    im.alt = productName || "Referenzbild";
+    im.onclick = function() {
+      document.getElementById("imgLightboxSrc").src = im.src;
+      document.getElementById("imgLightbox").classList.add("open");
+    };
+    container.appendChild(im);
+  });
+  sec.style.display = "block";
+  sec.scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+
+function hideReferenceImages() {
+  document.getElementById("refImgSection").style.display = "none";
+  document.getElementById("refImgs").innerHTML = "";
+}
+
 document.getElementById("query").addEventListener("keydown",e=>{if(e.key==="Enter")analyzeText();});
 document.getElementById("matNr").addEventListener("keydown",e=>{if(e.key==="Enter")analyzeMat();});
 document.getElementById("matNr").addEventListener("input",e=>{e.target.value=e.target.value.replace(/[^0-9]/g,"");});
