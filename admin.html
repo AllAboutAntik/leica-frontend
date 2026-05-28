@@ -144,6 +144,40 @@ td{padding:10px 10px;border-bottom:1px solid #111;font-size:.78rem;vertical-alig
     </div>
   </div>
 
+
+  <!-- Corrections Database -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">KORREKTURDATENBANK</span>
+      <button class="action-btn btn-approve" onclick="toggleCorrForm()" style="font-size:.6rem;padding:6px 10px">+ EINTRAG HINZUFÜGEN</button>
+    </div>
+    <div class="section-body">
+      <div id="corrForm" style="display:none;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #1A1A1A">
+        <div class="corr-form">
+          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;font-family:Arial,sans-serif;font-weight:700;display:block;margin-bottom:5px">PRODUKT *</label>
+            <input type="text" id="corrProduct" placeholder="z.B. Leica M3 Black Paint"/></div>
+          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;font-family:Arial,sans-serif;font-weight:700;display:block;margin-bottom:5px">QUELLE</label>
+            <input type="text" id="corrSource" placeholder="z.B. Leitz Photographica Auction 2024"/></div>
+          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;font-family:Arial,sans-serif;font-weight:700;display:block;margin-bottom:5px">SERIENNR. VON</label>
+            <input type="number" id="corrSerialFrom" placeholder="z.B. 700001"/></div>
+          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;font-family:Arial,sans-serif;font-weight:700;display:block;margin-bottom:5px">SERIENNR. BIS</label>
+            <input type="number" id="corrSerialTo" placeholder="z.B. 700999"/></div>
+          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;font-family:Arial,sans-serif;font-weight:700;display:block;margin-bottom:5px">PRIVATPREIS (EUR)</label>
+            <input type="number" id="corrMintPrice" placeholder="z.B. 45000"/></div>
+          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;font-family:Arial,sans-serif;font-weight:700;display:block;margin-bottom:5px">AUKTION MIN (EUR)</label>
+            <input type="number" id="corrAuctionLow" placeholder="z.B. 40000"/></div>
+          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;font-family:Arial,sans-serif;font-weight:700;display:block;margin-bottom:5px">AUKTION MAX (EUR)</label>
+            <input type="number" id="corrAuctionHigh" placeholder="z.B. 130000"/></div>
+          <div class="full"><label style="font-size:.58rem;letter-spacing:.15em;color:#555;font-family:Arial,sans-serif;font-weight:700;display:block;margin-bottom:5px">ANMERKUNGEN</label>
+            <input type="text" id="corrNotes" placeholder="z.B. Erste 1000 M3 je gebaut, extrem selten"/></div>
+        </div>
+        <button class="action-btn btn-approve" onclick="saveCorrection()">SPEICHERN</button>
+        <button class="action-btn" style="background:transparent;border:1px solid #333;color:#666;margin-left:8px" onclick="toggleCorrForm()">ABBRECHEN</button>
+      </div>
+      <div id="corrList"><div class="empty">Noch keine Einträge.</div></div>
+    </div>
+  </div>
+
 </div><!-- /dashboard -->
 </div><!-- /wrap -->
 
@@ -198,6 +232,7 @@ async function showDashboard() {
   document.getElementById('logoutBtn').style.display = 'block';
   await loadKeyStatus();
   await loadUsers();
+  await loadCorrections();
 }
 
 async function loadKeyStatus() {
@@ -238,23 +273,24 @@ async function loadUsers() {
   document.getElementById('statPending').textContent  = pending.length;
   document.getElementById('statLogins').textContent   = totalLogins;
 
-  // Pending
+  // Pending — show count in header too
   const pb = document.getElementById('pendingBody');
+  const pendingHeader = document.querySelector('.section-title');
   if (pending.length === 0) {
     pb.innerHTML = '<div class="empty">Keine wartenden Anfragen.</div>';
   } else {
-    pb.innerHTML = '<table><thead><tr><th>NAME</th><th>E-MAIL</th><th>FIRMA</th><th>NACHRICHT</th><th>REGISTRIERT</th><th>AKTION</th></tr></thead><tbody>' +
-      pending.map(u => `<tr>
-        <td><strong>${esc(u.name)}</strong></td>
-        <td><a href="mailto:${esc(u.email)}" style="color:#C8A97E">${esc(u.email)}</a></td>
-        <td>${esc(u.company||'–')}</td>
-        <td style="color:#888;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(u.message||'–')}</td>
-        <td style="color:#666">${fmt(u.registeredAt)}</td>
-        <td>
-          <button class="action-btn btn-approve" onclick="openApprove('${u.id}','${esc(u.name)}','${esc(u.email)}')">AKTIVIEREN</button>
-          <button class="action-btn btn-delete" style="margin-left:6px" onclick="deleteUser('${u.id}','${esc(u.name)}')">LÖSCHEN</button>
-        </td>
-      </tr>`).join('') +
+    pb.innerHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr><th>NAME</th><th>E-MAIL</th><th>FIRMA</th><th>NACHRICHT</th><th>REGISTRIERT</th><th>AKTION</th></tr></thead><tbody>' +
+      pending.map(u => '<tr>' +
+        '<td><strong>'+esc(u.name)+'</strong></td>' +
+        '<td><a href="mailto:'+esc(u.email)+'" style="color:#C8A97E">'+esc(u.email)+'</a></td>' +
+        '<td>'+esc(u.company||'–')+'</td>' +
+        '<td style="color:#888;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(u.message||'–')+'</td>' +
+        '<td style="color:#666">'+fmt(u.registeredAt)+'</td>' +
+        '<td>' +
+          '<button class="action-btn btn-approve" onclick="openApprove(''+u.id+'',''+esc(u.name)+'',''+esc(u.email)+'')">AKTIVIEREN</button>' +
+          '<button class="action-btn btn-delete" style="margin-left:6px" onclick="deleteUser(''+u.id+'',''+esc(u.name)+'')">LÖSCHEN</button>' +
+        '</td>' +
+      '</tr>').join('') +
     '</tbody></table>';
   }
 
@@ -326,6 +362,62 @@ if (adminToken) {
   });
 }
 document.getElementById('adminPw').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
+
+// ── CORRECTIONS ────────────────────────────────────────────────────────
+function toggleCorrForm() {
+  const f = document.getElementById('corrForm');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+}
+
+async function loadCorrections() {
+  const d = await api('GET', '/admin/corrections').catch(()=>({corrections:[]}));
+  const list = document.getElementById('corrList');
+  if (!d.corrections || d.corrections.length === 0) {
+    list.innerHTML = '<div class="empty">Noch keine Einträge. Füge Korrekturen hinzu um die KI zu verbessern.</div>';
+    return;
+  }
+  list.innerHTML = '<table class="corr-table">' +
+    '<thead><tr><th>PRODUKT</th><th>SERIENNR.</th><th>PRIVATPREIS</th><th>AUKTION</th><th>ANMERKUNG</th><th>QUELLE</th><th></th></tr></thead>' +
+    '<tbody>' + d.corrections.map(c =>
+      '<tr>' +
+      '<td><strong style="color:#E0D5C5">'+esc(c.product)+'</strong></td>' +
+      '<td style="color:#888">'+(c.serialFrom||'')+(c.serialTo&&c.serialTo!==c.serialFrom?' – '+c.serialTo:'')+'</td>' +
+      '<td style="color:#C8A97E">'+(c.mintPrice?c.mintPrice.toLocaleString('de-DE')+' €':'–')+'</td>' +
+      '<td style="color:#888">'+(c.auctionLow?c.auctionLow.toLocaleString('de-DE')+'–'+c.auctionHigh.toLocaleString('de-DE')+' €':'–')+'</td>' +
+      '<td style="color:#666;font-size:.7rem">'+esc(c.notes||'–')+'</td>' +
+      '<td style="color:#555;font-size:.7rem">'+esc(c.source||'–')+'</td>' +
+      '<td><button class="action-btn btn-delete" style="padding:4px 8px;font-size:.6rem" onclick="deleteCorrection(''+c.id+'')">✕</button></td>' +
+      '</tr>'
+    ).join('') + '</tbody></table>';
+}
+
+async function saveCorrection() {
+  const product = document.getElementById('corrProduct').value.trim();
+  if (!product) { alert('Produktbezeichnung ist Pflicht.'); return; }
+  const payload = {
+    product,
+    source:      document.getElementById('corrSource').value.trim(),
+    serialFrom:  parseInt(document.getElementById('corrSerialFrom').value)||null,
+    serialTo:    parseInt(document.getElementById('corrSerialTo').value)||null,
+    mintPrice:   parseInt(document.getElementById('corrMintPrice').value)||null,
+    auctionLow:  parseInt(document.getElementById('corrAuctionLow').value)||null,
+    auctionHigh: parseInt(document.getElementById('corrAuctionHigh').value)||null,
+    notes:       document.getElementById('corrNotes').value.trim(),
+  };
+  const d = await api('POST', '/admin/corrections', payload);
+  if (d.error) { alert('Fehler: '+d.error); return; }
+  // Clear form
+  ['corrProduct','corrSource','corrSerialFrom','corrSerialTo','corrMintPrice','corrAuctionLow','corrAuctionHigh','corrNotes']
+    .forEach(id => document.getElementById(id).value = '');
+  toggleCorrForm();
+  await loadCorrections();
+}
+
+async function deleteCorrection(id) {
+  if (!confirm('Eintrag löschen?')) return;
+  await api('DELETE', '/admin/correction', {id});
+  await loadCorrections();
+}
 </script>
 </body>
 </html>

@@ -247,6 +247,12 @@ header{background:#070707;border-bottom:1px solid #1A1A1A;padding:0 18px;positio
       <button class="auth-btn" id="registerBtn" onclick="doRegister()">ZUGANG ANFRAGEN</button>
       <div class="auth-msg" id="registerMsg"></div>
       <p class="auth-hint">Nach der Anfrage prüfen wir deinen Zugang und<br>senden dir den Zugangscode per E-Mail.</p>
+      <p class="auth-hint" style="margin-top:10px">
+        Mit der Registrierung akzeptierst du unsere
+        <a href="https://www.allaboutantik.com/privacy-policy" target="_blank" style="color:#C8A97E;text-decoration:none">Datenschutzerklärung</a>
+        und
+        <a href="https://www.allaboutantik.com/terms" target="_blank" style="color:#C8A97E;text-decoration:none">Nutzungsbedingungen</a>.
+      </p>
     </div>
   </div>
 </div>
@@ -812,6 +818,35 @@ function extractSerial(query) {
   return m ? parseInt(m[1]) : null;
 }
 
+// ── Load corrections from backend ────────────────────────────────────────
+let cachedCorrections = [];
+async function loadCorrections() {
+  try {
+    const r = await fetch(API_BASE+'/api/corrections', {
+      headers:{'Authorization':'Bearer '+sessionToken}
+    });
+    if (r.ok) {
+      const d = await r.json();
+      cachedCorrections = d.corrections || [];
+    }
+  } catch(e) {}
+}
+
+function correctionsPromptHint() {
+  if (!cachedCorrections.length) return '';
+  const relevant = cachedCorrections.slice(0,10); // max 10
+  return '\n\nKORREKTURDATENBANK (von All About Antik verifizierte Preise — HÖCHSTE PRIORITÄT):\n' +
+    relevant.map(c => {
+      let line = '- '+c.product;
+      if (c.serialFrom) line += ' (Seriennr. '+c.serialFrom+(c.serialTo&&c.serialTo!==c.serialFrom?'-'+c.serialTo:'')+')';
+      if (c.mintPrice)   line += ': Privatpreis ca. '+c.mintPrice.toLocaleString('de-DE')+' EUR';
+      if (c.auctionLow)  line += ', Auktion '+c.auctionLow.toLocaleString('de-DE')+'-'+c.auctionHigh.toLocaleString('de-DE')+' EUR';
+      if (c.notes)       line += ' | '+c.notes;
+      if (c.source)      line += ' (Quelle: '+c.source+')';
+      return line;
+    }).join('\n');
+}
+
 const SCHEMA='{"productName":"string","category":"string","referenceYear":"string","mintPrice":number,"marketTrend":"steigend OR stabil OR fallend","trendPercent":number,"confidence":"hoch OR mittel OR niedrig","notes":"string","ebayMin":number,"ebayMax":number,"collectorsItem":true OR false,"isAuctionItem":true OR false,"rarityLevel":"standard OR selten OR sehr selten OR Auktionsobjekt OR Weltklasse-Rarität","auctionEstimateLow":number,"auctionEstimateHigh":number,"auctionReasoning":"string","auctionRefs":[{"house":"string","item":"string","price":number,"year":number,"note":"string"}],"serialInfo":"string","buyVerdict":"ja OR bedingt OR nein","sellSpeed":"sehr schnell OR schnell OR mittel OR langsam OR sehr langsam","avgDays":number,"demand":"sehr hoch OR hoch OR mittel OR gering OR sehr gering","liqRisk":"sehr niedrig OR niedrig OR mittel OR hoch OR sehr hoch","reasoning":"string","pros":["string"],"cons":["string"]}';
 
 const PSUFFIX_STANDARD="\n\nReturn ONLY raw JSON, no markdown, no code fences:\n"+SCHEMA+"\n\nmintPrice=realistic EUR A- resale price (eBay DE/MPB/WEX). For standard items: isAuctionItem=false, rarityLevel='standard', auctionEstimateLow=0, auctionEstimateHigh=0, auctionRefs=[]. buyVerdict ja=good margin+speed, bedingt=only ideal price, nein=risky. avgDays=realistic days until sold. pros/cons 2-4 items German. reasoning German with **bold** key facts.";
@@ -1155,6 +1190,7 @@ function showApp() {
   document.getElementById('authOverlay').style.display='none';
   document.getElementById('userBar').style.display='flex';
   document.getElementById('userName').textContent = sessionUser || localStorage.getItem('sessionUser') || '';
+  loadCorrections(); // load corrections for prompt enhancement
 }
 
 // sessionToken is used directly in callAPI and analyzeImage fetch calls
