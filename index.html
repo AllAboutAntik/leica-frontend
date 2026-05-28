@@ -674,6 +674,54 @@ function renderResult(p){
 const API_BASE = 'https://leica-price-search-production-0908.up.railway.app';
 const AUTH_BASE = API_BASE;
 
+// ── SESSION STORAGE ───────────────────────────────────────────────────
+const TOKEN_KEY = 'lpi_session';
+const USER_KEY  = 'lpi_user';
+
+function saveToken(token, user) {
+  try { localStorage.setItem(TOKEN_KEY, token); } catch(e) {}
+  try { sessionStorage.setItem(TOKEN_KEY, token); } catch(e) {}
+  try { localStorage.setItem(USER_KEY, user); } catch(e) {}
+  try { sessionStorage.setItem(USER_KEY, user); } catch(e) {}
+  try {
+    var exp = new Date(Date.now()+30*24*60*60*1000).toUTCString();
+    document.cookie = TOKEN_KEY+'='+token+'; expires='+exp+'; path=/; SameSite=Lax';
+    document.cookie = USER_KEY+'='+encodeURIComponent(user)+'; expires='+exp+'; path=/; SameSite=Lax';
+  } catch(e) {}
+}
+
+function getStoredToken() {
+  try { var t=localStorage.getItem(TOKEN_KEY); if(t&&t.length>10) return t; } catch(e) {}
+  try { var t=sessionStorage.getItem(TOKEN_KEY); if(t&&t.length>10) return t; } catch(e) {}
+  try {
+    var m=document.cookie.match(new RegExp(TOKEN_KEY+'=([a-f0-9]+)'));
+    if(m&&m[1]) return m[1];
+  } catch(e) {}
+  return '';
+}
+
+function getStoredUser() {
+  try { var u=localStorage.getItem(USER_KEY); if(u) return u; } catch(e) {}
+  try { var u=sessionStorage.getItem(USER_KEY); if(u) return u; } catch(e) {}
+  try {
+    var m=document.cookie.match(new RegExp(USER_KEY+'=([^;]+)'));
+    if(m&&m[1]) return decodeURIComponent(m[1]);
+  } catch(e) {}
+  return '';
+}
+
+function clearToken() {
+  try { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(USER_KEY); } catch(e) {}
+  try { sessionStorage.removeItem(TOKEN_KEY); sessionStorage.removeItem(USER_KEY); } catch(e) {}
+  try {
+    document.cookie = TOKEN_KEY+'=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    document.cookie = USER_KEY+'=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  } catch(e) {}
+}
+
+var sessionToken = getStoredToken();
+var sessionUser  = getStoredUser();
+
 
 // ── RARITY DETECTION ─────────────────────────────────────────────────────
 // Known Leica serial number ranges for early/special cameras
