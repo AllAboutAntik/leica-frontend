@@ -279,19 +279,21 @@ async function loadUsers() {
   if (pending.length === 0) {
     pb.innerHTML = '<div class="empty">Keine wartenden Anfragen.</div>';
   } else {
-    pb.innerHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr><th>NAME</th><th>E-MAIL</th><th>FIRMA</th><th>NACHRICHT</th><th>REGISTRIERT</th><th>AKTION</th></tr></thead><tbody>' +
-      pending.map(u => '<tr>' +
-        '<td><strong>'+esc(u.name)+'</strong></td>' +
-        '<td><a href="mailto:'+esc(u.email)+'" style="color:#C8A97E">'+esc(u.email)+'</a></td>' +
-        '<td>'+esc(u.company||'–')+'</td>' +
-        '<td style="color:#888;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(u.message||'–')+'</td>' +
-        '<td style="color:#666">'+fmt(u.registeredAt)+'</td>' +
-        '<td>' +
-          '<button class="action-btn btn-approve" onclick="openApprove(''+u.id+'',''+esc(u.name)+'',''+esc(u.email)+'')">AKTIVIEREN</button>' +
-          '<button class="action-btn btn-delete" style="margin-left:6px" onclick="deleteUser(''+u.id+'',''+esc(u.name)+'')">LÖSCHEN</button>' +
-        '</td>' +
-      '</tr>').join('') +
-    '</tbody></table>';
+    let pendingHTML = '<table style="width:100%;border-collapse:collapse"><thead><tr><th>NAME</th><th>E-MAIL</th><th>FIRMA</th><th>NACHRICHT</th><th>REGISTRIERT</th><th>AKTION</th></tr></thead><tbody>';
+    pending.forEach(function(u) {
+      pendingHTML += '<tr>';
+      pendingHTML += '<td><strong>' + esc(u.name) + '</strong></td>';
+      pendingHTML += '<td><a href="mailto:' + esc(u.email) + '" style="color:#C8A97E">' + esc(u.email) + '</a></td>';
+      pendingHTML += '<td>' + esc(u.company||'–') + '</td>';
+      pendingHTML += '<td style="color:#888;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(u.message||'–') + '</td>';
+      pendingHTML += '<td style="color:#666">' + fmt(u.registeredAt) + '</td>';
+      pendingHTML += '<td>';
+      pendingHTML += '<button class="action-btn btn-approve" onclick="openApprove('' + u.id + '','' + esc(u.name) + '','' + esc(u.email) + '')">AKTIVIEREN</button>';
+      pendingHTML += '<button class="action-btn btn-delete" style="margin-left:6px" onclick="deleteUser('' + u.id + '','' + esc(u.name) + '')">LÖSCHEN</button>';
+      pendingHTML += '</td></tr>';
+    });
+    pendingHTML += '</tbody></table>';
+    pb.innerHTML = pendingHTML;
   }
 
   // Approved
