@@ -832,17 +832,42 @@ async function loadCorrections() {
   } catch(e) {}
 }
 
-function correctionsPromptHint() {
+function correctionsPromptHint(queryText) {
   if (!cachedCorrections.length) return '';
-  const relevant = cachedCorrections.slice(0,10); // max 10
-  return '\n\nKORREKTURDATENBANK (von All About Antik verifizierte Preise — HÖCHSTE PRIORITÄT):\n' +
-    relevant.map(c => {
+  const q = (queryText||'').toLowerCase();
+  // Find relevant corrections by matching product name, material number, or variant
+  const relevant = cachedCorrections.filter(c => {
+    if (!c) return false;
+    const prod = (c.product||'').toLowerCase();
+    const matNr = String(c.materialNr||'');
+    const matAlt = (c.materialNrAlt||[]).map(String);
+    const variant = (c.variant||'').toLowerCase();
+    // Match by material number in query
+    if (matNr && q.includes(matNr)) return true;
+    if (matAlt.some(m => q.includes(m))) return true;
+    // Match by product name words
+    const words = prod.split(' ').filter(w => w.length > 3);
+    if (words.some(w => q.includes(w))) return true;
+    // Match by variant
+    if (variant && q.includes(variant)) return true;
+    return false;
+  }).slice(0,5);
+
+  // If no specific match, include all corrections as general reference
+  const toUse = relevant.length > 0 ? relevant : cachedCorrections.slice(0,8);
+
+  return '\n\nKORREKTURDATENBANK All About Antik (HÖCHSTE PRIORITÄT — diese Preise überschreiben alle anderen Schätzungen):\n' +
+    toUse.map(c => {
       let line = '- '+c.product;
-      if (c.serialFrom) line += ' (Seriennr. '+c.serialFrom+(c.serialTo&&c.serialTo!==c.serialFrom?'-'+c.serialTo:'')+')';
-      if (c.mintPrice)   line += ': Privatpreis ca. '+c.mintPrice.toLocaleString('de-DE')+' EUR';
-      if (c.auctionLow)  line += ', Auktion '+c.auctionLow.toLocaleString('de-DE')+'-'+c.auctionHigh.toLocaleString('de-DE')+' EUR';
-      if (c.notes)       line += ' | '+c.notes;
-      if (c.source)      line += ' (Quelle: '+c.source+')';
+      if (c.variant)      line += ' ('+c.variant+')';
+      if (c.materialNr)   line += ' [Mat.-Nr: '+c.materialNr+(c.materialNrAlt&&c.materialNrAlt.length?'/'+c.materialNrAlt.join('/'):'')+']';
+      if (c.variantDesc)  line += ' — '+c.variantDesc;
+      if (c.serialFrom)   line += ', Seriennr. '+c.serialFrom+(c.serialTo&&c.serialTo!==c.serialFrom?'-'+c.serialTo:'');
+      if (c.priceFrom)    line += ': Privatmarkt '+c.priceFrom.toLocaleString('de-DE')+(c.priceTo?'-'+c.priceTo.toLocaleString('de-DE'):'')+' EUR';
+      else if (c.mintPrice) line += ': Referenzpreis A- ca. '+c.mintPrice.toLocaleString('de-DE')+' EUR';
+      if (c.auctionLow)   line += ', Auktion '+c.auctionLow.toLocaleString('de-DE')+'-'+c.auctionHigh.toLocaleString('de-DE')+' EUR';
+      if (c.notes)        line += ' | WICHTIG: '+c.notes;
+      if (c.source)       line += ' (Quelle: '+c.source+')';
       return line;
     }).join('\n');
 }

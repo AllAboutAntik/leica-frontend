@@ -19,14 +19,14 @@ header{background:#070707;border-bottom:1px solid #1A1A1A;padding:16px 24px;disp
 .err{color:#EF5350;font-size:.75rem;margin-top:8px;min-height:20px}
 #dashboard{display:none;padding:20px}
 .card{background:#151515;border:1px solid #1E1E1E;border-radius:6px;margin-bottom:16px;overflow:hidden}
-.card-header{padding:12px 16px;border-bottom:1px solid #1E1E1E;display:flex;align-items:center;justify-content:space-between}
+.card-header{padding:12px 16px;border-bottom:1px solid #1E1E1E;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .card-title{font-size:.68rem;letter-spacing:.2em;color:#C8A97E;font-weight:700}
 .card-body{padding:16px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .stat{background:#0D0D0D;border-radius:4px;padding:12px;text-align:center}
 .stat-val{font-size:1.5rem;font-weight:700;color:#C8A97E}
 .stat-lbl{font-size:.58rem;letter-spacing:.15em;color:#555;margin-top:3px}
-.btn{background:transparent;border:1px solid #2A2A2A;border-radius:3px;padding:6px 12px;font-size:.62rem;letter-spacing:.1em;cursor:pointer;font-family:Arial,sans-serif;font-weight:700}
+.btn{background:transparent;border:1px solid #2A2A2A;border-radius:3px;padding:6px 12px;font-size:.62rem;letter-spacing:.1em;cursor:pointer;font-family:Arial,sans-serif;font-weight:700;white-space:nowrap}
 .btn-green{border-color:#4CAF50;color:#4CAF50}
 .btn-red{border-color:#EF5350;color:#EF5350}
 .btn-gold2{background:#C8A97E;color:#0A0A0A;border-color:#C8A97E}
@@ -34,24 +34,57 @@ header{background:#070707;border-bottom:1px solid #1A1A1A;padding:16px 24px;disp
 table{width:100%;border-collapse:collapse}
 th{text-align:left;font-size:.58rem;letter-spacing:.12em;color:#555;padding:7px 8px;border-bottom:1px solid #1A1A1A;font-weight:700}
 td{padding:9px 8px;border-bottom:1px solid #111;font-size:.78rem;vertical-align:middle}
-.badge{display:inline-block;padding:2px 7px;border-radius:2px;font-size:.62rem;font-weight:700}
-.badge-green{background:rgba(76,175,80,.15);color:#4CAF50}
-.badge-yellow{background:rgba(255,193,7,.1);color:#FFC107}
-input.field{width:100%;background:#0D0D0D;border:1px solid #252525;border-radius:4px;padding:9px 11px;color:#E0D5C5;font-size:.82rem;font-family:Arial,sans-serif;outline:none}
-input.field:focus{border-color:#C8A97E}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.field{width:100%;background:#0D0D0D;border:1px solid #252525;border-radius:4px;padding:9px 11px;color:#E0D5C5;font-size:.82rem;font-family:Arial,sans-serif;outline:none}
+.field:focus{border-color:#C8A97E}
+.flbl{font-size:.58rem;letter-spacing:.15em;color:#555;display:block;margin-bottom:4px;font-weight:700;margin-top:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 .full{grid-column:1/-1}
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center}
+.key-row{display:flex;gap:8px}
+.key-row .field{flex:1}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center;padding:20px}
 .modal-bg.open{display:flex}
-.modal{background:#161616;border:1px solid #2A2A2A;border-radius:6px;padding:24px;width:340px;max-width:95vw}
+.modal{background:#161616;border:1px solid #2A2A2A;border-radius:6px;padding:24px;width:380px;max-width:100%}
 .modal h3{font-size:.82rem;letter-spacing:.15em;color:#C8A97E;margin-bottom:12px}
-.modal p{font-size:.75rem;color:#888;margin-bottom:12px;line-height:1.5}
-.modal-btns{display:flex;gap:8px;margin-top:12px}
+.modal-btns{display:flex;gap:8px;margin-top:14px}
 .modal-btns button{flex:1;padding:10px;border-radius:4px;font-size:.68rem;letter-spacing:.1em;font-weight:700;cursor:pointer;border:none}
 .code-box{background:#0D0D0D;border:1px solid #C8A97E;border-radius:3px;padding:8px 14px;font-size:.95rem;letter-spacing:.2em;color:#C8A97E;font-family:monospace;text-align:center;margin:8px 0}
-.key-row{display:flex;gap:8px}
-.key-row input{flex:1}
-@media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
+
+/* Corrections form */
+.corr-form-wrap{display:none;background:#0D0D0D;border:1px solid #252525;border-radius:5px;padding:18px;margin-bottom:16px}
+.section-divider{font-size:.6rem;letter-spacing:.2em;color:#C8A97E;font-weight:700;margin:16px 0 8px;border-bottom:1px solid #1A1A1A;padding-bottom:6px}
+
+/* Image upload area */
+.img-drop{border:2px dashed #2A2A2A;border-radius:5px;padding:20px;text-align:center;cursor:pointer;transition:border-color .2s;margin-top:6px}
+.img-drop:hover{border-color:#C8A97E}
+.img-drop-txt{font-size:.75rem;color:#555;font-family:Arial,sans-serif}
+.img-drop-txt span{color:#C8A97E}
+.img-previews{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.img-preview-wrap{position:relative;width:80px;height:80px}
+.img-preview-wrap img{width:80px;height:80px;object-fit:cover;border-radius:4px;border:1px solid #2A2A2A}
+.img-preview-wrap .del-img{position:absolute;top:-4px;right:-4px;background:#EF5350;color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700}
+
+/* Correction cards */
+.corr-card{background:#0D0D0D;border:1px solid #1E1E1E;border-radius:5px;padding:14px;margin-bottom:10px}
+.corr-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.corr-card-title{font-size:.9rem;color:#F5EDD9;font-weight:700}
+.corr-card-meta{font-size:.7rem;color:#666;margin-top:3px}
+.corr-card-imgs{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.corr-card-imgs img{width:60px;height:60px;object-fit:cover;border-radius:3px;border:1px solid #2A2A2A;cursor:pointer}
+.corr-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.corr-tag{background:rgba(200,169,126,.1);color:#C8A97E;padding:2px 8px;border-radius:2px;font-size:.65rem}
+.corr-price{color:#4CAF50;font-weight:700}
+.corr-auction{color:#FFC107}
+
+/* Image lightbox */
+#lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:200;align-items:center;justify-content:center;cursor:pointer}
+#lightbox.open{display:flex}
+#lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:4px}
+
+@media(max-width:600px){
+  .stats{grid-template-columns:1fr 1fr}
+  .grid2,.grid3{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -61,6 +94,7 @@ input.field:focus{border-color:#C8A97E}
   <button id="logoutBtn" onclick="logout()">ABMELDEN</button>
 </header>
 
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-box">
     <h2>ADMIN LOGIN</h2>
@@ -71,6 +105,7 @@ input.field:focus{border-color:#C8A97E}
   </div>
 </div>
 
+<!-- DASHBOARD -->
 <div id="dashboard">
 
   <!-- Stats -->
@@ -112,7 +147,7 @@ input.field:focus{border-color:#C8A97E}
     <div class="card-header"><span class="card-title">AKTIVE NUTZER</span></div>
     <div class="card-body">
       <table>
-        <thead><tr><th>NAME</th><th>E-MAIL</th><th>FIRMA</th><th>LOGINS</th><th>LETZTER LOGIN</th><th>AKTION</th></tr></thead>
+        <thead><tr><th>NAME</th><th>E-MAIL</th><th>FIRMA</th><th>LOGINS</th><th>ZULETZT</th><th>AKTION</th></tr></thead>
         <tbody id="activeBody"></tbody>
       </table>
     </div>
@@ -122,24 +157,96 @@ input.field:focus{border-color:#C8A97E}
   <div class="card">
     <div class="card-header">
       <span class="card-title">KORREKTURDATENBANK</span>
-      <button class="btn btn-gold2" onclick="toggleCorrForm()">+ HINZUFÜGEN</button>
+      <button class="btn btn-gold2" onclick="toggleCorrForm()">+ NEUER EINTRAG</button>
     </div>
     <div class="card-body">
-      <div id="corrForm" style="display:none;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #1A1A1A">
-        <div class="grid2" style="margin-bottom:8px">
-          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;display:block;margin-bottom:4px;font-weight:700">PRODUKT *</label><input class="field" id="cProd" placeholder="z.B. Leica M3 Black Paint"/></div>
-          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;display:block;margin-bottom:4px;font-weight:700">QUELLE</label><input class="field" id="cSrc" placeholder="z.B. Leitz Photographica Auction 2024"/></div>
-          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;display:block;margin-bottom:4px;font-weight:700">SERIENNR. VON</label><input class="field" type="number" id="cSfrom" placeholder="700001"/></div>
-          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;display:block;margin-bottom:4px;font-weight:700">SERIENNR. BIS</label><input class="field" type="number" id="cSto" placeholder="700999"/></div>
-          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;display:block;margin-bottom:4px;font-weight:700">PRIVATPREIS (EUR)</label><input class="field" type="number" id="cPrice" placeholder="45000"/></div>
-          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;display:block;margin-bottom:4px;font-weight:700">AUKTION MIN (EUR)</label><input class="field" type="number" id="cAlow" placeholder="40000"/></div>
-          <div><label style="font-size:.58rem;letter-spacing:.15em;color:#555;display:block;margin-bottom:4px;font-weight:700">AUKTION MAX (EUR)</label><input class="field" type="number" id="cAhigh" placeholder="130000"/></div>
-          <div class="full"><label style="font-size:.58rem;letter-spacing:.15em;color:#555;display:block;margin-bottom:4px;font-weight:700">ANMERKUNG</label><input class="field" id="cNote" placeholder="z.B. Erste 1000 M3, extrem selten"/></div>
+
+      <!-- Form -->
+      <div class="corr-form-wrap" id="corrForm">
+
+        <div class="section-divider">PRODUKTIDENTIFIKATION</div>
+        <div class="grid2">
+          <div>
+            <label class="flbl" style="margin-top:0">PRODUKTBEZEICHNUNG *</label>
+            <input class="field" id="cProd" placeholder="z.B. Summicron-M 2/35mm V4 King of Bokeh"/>
+          </div>
+          <div>
+            <label class="flbl" style="margin-top:0">VARIANTE</label>
+            <input class="field" id="cVariant" placeholder="z.B. Schwarz / Silber / Chrom / Titan"/>
+          </div>
+          <div>
+            <label class="flbl" style="margin-top:0">MATERIALNUMMER (PRIMÄR)</label>
+            <input class="field" id="cMatNr" placeholder="z.B. 11310" type="text"/>
+          </div>
+          <div>
+            <label class="flbl" style="margin-top:0">WEITERE MATERIALNUMMERN</label>
+            <input class="field" id="cMatAlt" placeholder="z.B. 11311, 11312 (kommagetrennt)"/>
+          </div>
+          <div class="full">
+            <label class="flbl" style="margin-top:0">VARIANTENBESCHREIBUNG</label>
+            <input class="field" id="cVarDesc" placeholder="z.B. V4 pre-ASPH 'King of Bokeh', produziert 1969-1979, Sammlerbezeichnung"/>
+          </div>
         </div>
-        <button class="btn btn-green" onclick="saveCorr()">SPEICHERN</button>
-        <button class="btn" style="margin-left:8px" onclick="toggleCorrForm()">ABBRECHEN</button>
+
+        <div class="section-divider">SERIENNUMMERN</div>
+        <div class="grid2">
+          <div>
+            <label class="flbl" style="margin-top:0">SERIENNUMMER VON</label>
+            <input class="field" type="number" id="cSfrom" placeholder="z.B. 2314001"/>
+          </div>
+          <div>
+            <label class="flbl" style="margin-top:0">SERIENNUMMER BIS</label>
+            <input class="field" type="number" id="cSto" placeholder="z.B. 2800000"/>
+          </div>
+        </div>
+
+        <div class="section-divider">PREISE</div>
+        <div class="grid3">
+          <div>
+            <label class="flbl" style="margin-top:0">PRIVATPREIS VON (EUR)</label>
+            <input class="field" type="number" id="cPfrom" placeholder="z.B. 1800"/>
+          </div>
+          <div>
+            <label class="flbl" style="margin-top:0">PRIVATPREIS BIS (EUR)</label>
+            <input class="field" type="number" id="cPto" placeholder="z.B. 2800"/>
+          </div>
+          <div>
+            <label class="flbl" style="margin-top:0">REFERENZPREIS A- (EUR)</label>
+            <input class="field" type="number" id="cPrice" placeholder="z.B. 2200"/>
+          </div>
+          <div>
+            <label class="flbl" style="margin-top:0">AUKTION MIN (EUR)</label>
+            <input class="field" type="number" id="cAlow" placeholder="z.B. 2000"/>
+          </div>
+          <div>
+            <label class="flbl" style="margin-top:0">AUKTION MAX (EUR)</label>
+            <input class="field" type="number" id="cAhigh" placeholder="z.B. 3500"/>
+          </div>
+          <div>
+            <label class="flbl" style="margin-top:0">QUELLE</label>
+            <input class="field" id="cSrc" placeholder="z.B. eBay DE / MPB 2024"/>
+          </div>
+        </div>
+
+        <div class="section-divider">REFERENZBILDER (bis zu 5)</div>
+        <p style="font-size:.7rem;color:#555;margin-bottom:8px">Bilder helfen der KI das Produkt visuell zu erkennen. Empfohlen: Typenschild, Objektivfront, Gravur, Seriennummernbereich.</p>
+        <div class="img-drop" id="imgDrop" onclick="document.getElementById('imgFileInput').click()">
+          <div class="img-drop-txt">📷 Klicken oder Bilder hierher ziehen<br><span>JPG, PNG — max. 5 Bilder, je max. 2MB</span></div>
+        </div>
+        <input type="file" id="imgFileInput" accept="image/*" multiple style="display:none" onchange="handleImgUpload(event)"/>
+        <div class="img-previews" id="imgPreviews"></div>
+
+        <div class="section-divider">ANMERKUNGEN</div>
+        <input class="field" id="cNote" placeholder="z.B. Nicht verwechseln mit ASPH-Version (11879). Typisch: weiche Haptik, kein 6-Bit Code."/>
+
+        <div style="margin-top:16px;display:flex;gap:8px">
+          <button class="btn btn-green" onclick="saveCorr()">EINTRAG SPEICHERN</button>
+          <button class="btn" onclick="toggleCorrForm()">ABBRECHEN</button>
+        </div>
       </div>
-      <div id="corrBody"><div class="empty">Noch keine Einträge.</div></div>
+
+      <!-- List -->
+      <div id="corrBody"><div class="empty">Noch keine Einträge. Füge Produkte hinzu um die KI zu verbessern.</div></div>
     </div>
   </div>
 
@@ -149,9 +256,9 @@ input.field:focus{border-color:#C8A97E}
 <div class="modal-bg" id="approveModal">
   <div class="modal">
     <h3>ZUGANG AKTIVIEREN</h3>
-    <p id="approveInfo"></p>
-    <label style="font-size:.6rem;letter-spacing:.15em;color:#555;display:block;margin-bottom:6px;font-weight:700">ZUGANGSCODE</label>
-    <input class="field" id="approveCode" placeholder="Automatisch generiert oder eigenen eingeben" maxlength="12" style="text-transform:uppercase;letter-spacing:.15em;margin-bottom:4px"/>
+    <p id="approveInfo" style="font-size:.8rem;color:#888;margin-bottom:12px"></p>
+    <label class="flbl" style="margin-top:0">ZUGANGSCODE</label>
+    <input class="field" id="approveCode" placeholder="Automatisch oder eigenen eingeben" maxlength="12" style="text-transform:uppercase;letter-spacing:.15em;margin-top:6px"/>
     <div class="code-box" id="codeResult" style="display:none"></div>
     <div class="modal-btns">
       <button style="background:#1E1E1E;color:#888" onclick="closeModal()">ABBRECHEN</button>
@@ -160,46 +267,46 @@ input.field:focus{border-color:#C8A97E}
   </div>
 </div>
 
+<!-- Image lightbox -->
+<div id="lightbox" onclick="document.getElementById('lightbox').classList.remove('open')">
+  <img id="lightboxImg" src="" alt=""/>
+</div>
+
 <script>
 var BASE = 'https://leica-price-search-production-0908.up.railway.app';
 var adminToken = localStorage.getItem('aaa_admin_token') || '';
 var pendingApproveId = null;
+var uploadedImages = []; // array of {dataUrl, base64, mime}
 
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function fmt(ts) {
   if (!ts) return '–';
-  return new Date(ts).toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+  return new Date(ts).toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
 }
+function fmtEur(n) { return n ? Number(n).toLocaleString('de-DE') + ' €' : '–'; }
 
 async function req(method, path, body) {
-  var opts = {
-    method: method,
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + adminToken }
-  };
+  var opts = { method:method, headers:{'Content-Type':'application/json','Authorization':'Bearer '+adminToken} };
   if (body) opts.body = JSON.stringify(body);
   var r = await fetch(BASE + path, opts);
   return r.json();
 }
 
+// ── LOGIN ──────────────────────────────────────────────────────────────
 async function doLogin() {
   var pw = document.getElementById('adminPw').value;
   document.getElementById('loginErr').textContent = '';
   try {
-    var d = await req('POST', '/admin/login', { password: pw });
+    var d = await req('POST', '/admin/login', {password:pw});
     if (d.error) { document.getElementById('loginErr').textContent = d.error; return; }
     adminToken = d.token;
     localStorage.setItem('aaa_admin_token', adminToken);
     showDashboard();
-  } catch(e) {
-    document.getElementById('loginErr').textContent = 'Verbindungsfehler: ' + e.message;
-  }
+  } catch(e) { document.getElementById('loginErr').textContent = 'Verbindungsfehler: ' + e.message; }
 }
 
 function logout() {
-  localStorage.removeItem('aaa_admin_token');
-  adminToken = '';
+  localStorage.removeItem('aaa_admin_token'); adminToken = '';
   document.getElementById('dashboard').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('logoutBtn').style.display = 'none';
@@ -212,45 +319,53 @@ async function showDashboard() {
   await loadAll();
 }
 
-async function loadAll() {
-  await loadKeyStatus();
-  await loadUsers();
-  await loadCorr();
-}
+async function loadAll() { await loadKeyStatus(); await loadUsers(); await loadCorr(); }
 
+// ── API KEY ────────────────────────────────────────────────────────────
 async function loadKeyStatus() {
   try {
     var d = await req('GET', '/admin/key-status');
     var el = document.getElementById('keyStatus');
-    if (d.hasKey) el.innerHTML = '<span style="color:#4CAF50">●</span> API Key aktiv: <strong style="color:#C8A97E">' + d.keyHint + '</strong>';
-    else el.innerHTML = '<span style="color:#EF5350">●</span> Kein API Key gesetzt';
+    el.innerHTML = d.hasKey
+      ? '<span style="color:#4CAF50">●</span> API Key aktiv: <strong style="color:#C8A97E">'+d.keyHint+'</strong>'
+      : '<span style="color:#EF5350">●</span> Kein API Key gesetzt';
   } catch(e) {}
 }
-
 async function saveKey() {
   var k = document.getElementById('newKey').value.replace(/\s/g,'');
   if (!k) return;
-  var d = await req('POST', '/admin/save-key', { apiKey: k });
-  if (d.error) { alert('Fehler: ' + d.error); return; }
+  var d = await req('POST', '/admin/save-key', {apiKey:k});
+  if (d.error) { alert('Fehler: '+d.error); return; }
   document.getElementById('newKey').value = '';
-  await loadKeyStatus();
-  alert('API Key gespeichert!');
+  await loadKeyStatus(); alert('API Key gespeichert!');
 }
 
+// ── USERS ──────────────────────────────────────────────────────────────
 async function loadUsers() {
   try {
     var d = await req('GET', '/admin/users');
     if (!d.users) return;
     var pending  = d.users.filter(function(u){ return !u.approved; });
     var approved = d.users.filter(function(u){ return u.approved; });
-    var logins   = d.users.reduce(function(s,u){ return s+(u.loginCount||0); }, 0);
     document.getElementById('sTotal').textContent   = d.users.length;
     document.getElementById('sActive').textContent  = approved.length;
     document.getElementById('sPending').textContent = pending.length;
-    document.getElementById('sLogins').textContent  = logins;
+    document.getElementById('sLogins').textContent  = d.users.reduce(function(s,u){ return s+(u.loginCount||0); },0);
     renderPending(pending);
     renderApproved(approved);
   } catch(e) { console.error(e); }
+}
+
+function mkTd(content, style) {
+  var td = document.createElement('td');
+  if (typeof content === 'string') td.innerHTML = content;
+  else td.appendChild(content);
+  if (style) td.style.cssText = style;
+  return td;
+}
+function mkBtn(label, cls, onclick) {
+  var b = document.createElement('button');
+  b.className = 'btn ' + cls; b.textContent = label; b.onclick = onclick; return b;
 }
 
 function renderPending(users) {
@@ -261,23 +376,19 @@ function renderPending(users) {
   var tb = document.createElement('tbody');
   users.forEach(function(u) {
     var tr = document.createElement('tr');
-    var td1 = document.createElement('td'); td1.innerHTML = '<strong>' + esc(u.name) + '</strong>';
-    var td2 = document.createElement('td'); td2.innerHTML = '<a href="mailto:' + esc(u.email) + '" style="color:#C8A97E">' + esc(u.email) + '</a>';
-    var td3 = document.createElement('td'); td3.textContent = u.company || '–';
-    var td4 = document.createElement('td'); td4.textContent = u.message || '–'; td4.style.cssText = 'color:#888;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis';
-    var td5 = document.createElement('td'); td5.textContent = fmt(u.registeredAt); td5.style.color = '#666';
     var td6 = document.createElement('td');
-    var b1 = document.createElement('button'); b1.className = 'btn btn-green'; b1.textContent = 'AKTIVIEREN';
-    b1.onclick = (function(uid, uname, uemail){ return function(){ openApprove(uid, uname, uemail); }; })(u.id, u.name, u.email);
-    var b2 = document.createElement('button'); b2.className = 'btn btn-red'; b2.textContent = 'LÖSCHEN'; b2.style.marginLeft = '6px';
-    b2.onclick = (function(uid, uname){ return function(){ delUser(uid, uname); }; })(u.id, u.name);
-    td6.appendChild(b1); td6.appendChild(b2);
-    tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4); tr.appendChild(td5); tr.appendChild(td6);
+    var b1 = mkBtn('AKTIVIEREN','btn-green',(function(id,n,e){return function(){openApprove(id,n,e);};})(u.id,u.name,u.email));
+    var b2 = mkBtn('LÖSCHEN','btn-red',(function(id,n){return function(){delUser(id,n);};})(u.id,u.name));
+    b2.style.marginLeft='6px'; td6.appendChild(b1); td6.appendChild(b2);
+    tr.appendChild(mkTd('<strong>'+esc(u.name)+'</strong>'));
+    tr.appendChild(mkTd('<a href="mailto:'+esc(u.email)+'" style="color:#C8A97E">'+esc(u.email)+'</a>'));
+    tr.appendChild(mkTd(esc(u.company||'–')));
+    tr.appendChild(mkTd(esc(u.message||'–'),'color:#888;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis'));
+    tr.appendChild(mkTd(fmt(u.registeredAt),'color:#666'));
+    tr.appendChild(td6);
     tb.appendChild(tr);
   });
-  t.appendChild(tb);
-  el.innerHTML = '';
-  el.appendChild(t);
+  t.appendChild(tb); el.innerHTML = ''; el.appendChild(t);
 }
 
 function renderApproved(users) {
@@ -286,124 +397,224 @@ function renderApproved(users) {
   tb.innerHTML = '';
   users.forEach(function(u) {
     var tr = document.createElement('tr');
-    var td1 = document.createElement('td'); td1.innerHTML = '<strong>' + esc(u.name) + '</strong>';
-    var td2 = document.createElement('td'); td2.innerHTML = '<a href="mailto:' + esc(u.email) + '" style="color:#C8A97E">' + esc(u.email) + '</a>';
-    var td3 = document.createElement('td'); td3.textContent = u.company || '–';
-    var td4 = document.createElement('td'); td4.textContent = u.loginCount || 0; td4.style.textAlign = 'center';
-    var td5 = document.createElement('td'); td5.textContent = fmt(u.lastLogin); td5.style.color = '#666';
     var td6 = document.createElement('td');
-    var b1 = document.createElement('button'); b1.className = 'btn btn-red'; b1.textContent = 'SPERREN';
-    b1.onclick = (function(uid, uname){ return function(){ revokeUser(uid, uname); }; })(u.id, u.name);
-    var b2 = document.createElement('button'); b2.className = 'btn btn-red'; b2.textContent = 'LÖSCHEN'; b2.style.marginLeft = '6px';
-    b2.onclick = (function(uid, uname){ return function(){ delUser(uid, uname); }; })(u.id, u.name);
-    td6.appendChild(b1); td6.appendChild(b2);
-    tr.appendChild(td1); tr.appendChild(td2); tr.appendChild(td3); tr.appendChild(td4); tr.appendChild(td5); tr.appendChild(td6);
+    var b1 = mkBtn('SPERREN','btn-red',(function(id,n){return function(){revokeUser(id,n);};})(u.id,u.name));
+    var b2 = mkBtn('LÖSCHEN','btn-red',(function(id,n){return function(){delUser(id,n);};})(u.id,u.name));
+    b2.style.marginLeft='6px'; td6.appendChild(b1); td6.appendChild(b2);
+    tr.appendChild(mkTd('<strong>'+esc(u.name)+'</strong>'));
+    tr.appendChild(mkTd('<a href="mailto:'+esc(u.email)+'" style="color:#C8A97E">'+esc(u.email)+'</a>'));
+    tr.appendChild(mkTd(esc(u.company||'–')));
+    tr.appendChild(mkTd(String(u.loginCount||0),'text-align:center'));
+    tr.appendChild(mkTd(fmt(u.lastLogin),'color:#666'));
+    tr.appendChild(td6);
     tb.appendChild(tr);
   });
 }
 
-function openApprove(id, name, email) {
+function openApprove(id,name,email) {
   pendingApproveId = id;
   document.getElementById('approveInfo').textContent = name + ' · ' + email;
   document.getElementById('approveCode').value = '';
   document.getElementById('codeResult').style.display = 'none';
   document.getElementById('approveModal').classList.add('open');
 }
-function closeModal() { document.getElementById('approveModal').classList.remove('open'); pendingApproveId = null; }
-
+function closeModal() { document.getElementById('approveModal').classList.remove('open'); pendingApproveId=null; }
 async function confirmApprove() {
   if (!pendingApproveId) return;
-  var code = document.getElementById('approveCode').value.trim().toUpperCase() || undefined;
-  var d = await req('POST', '/admin/approve', { userId: pendingApproveId, accessCode: code });
-  if (d.error) { alert('Fehler: ' + d.error); return; }
+  var code = document.getElementById('approveCode').value.trim().toUpperCase()||undefined;
+  var d = await req('POST','/admin/approve',{userId:pendingApproveId,accessCode:code});
+  if (d.error) { alert('Fehler: '+d.error); return; }
   document.getElementById('codeResult').textContent = d.accessCode;
   document.getElementById('codeResult').style.display = 'block';
   document.getElementById('approveCode').value = d.accessCode;
-  await loadUsers();
-  setTimeout(closeModal, 4000);
+  await loadUsers(); setTimeout(closeModal, 5000);
 }
-
-async function revokeUser(id, name) {
-  if (!confirm('Zugang von ' + name + ' sperren?')) return;
-  var d = await req('POST', '/admin/revoke', { userId: id });
-  if (d.error) { alert('Fehler: ' + d.error); return; }
+async function revokeUser(id,name) {
+  if (!confirm('Zugang von '+name+' sperren?')) return;
+  var d = await req('POST','/admin/revoke',{userId:id});
+  if (d.error) { alert('Fehler: '+d.error); return; }
   await loadUsers();
 }
-
-async function delUser(id, name) {
-  if (!confirm('Nutzer ' + name + ' löschen?')) return;
-  var d = await req('DELETE', '/admin/user', { userId: id });
-  if (d.error) { alert('Fehler: ' + d.error); return; }
+async function delUser(id,name) {
+  if (!confirm('Nutzer '+name+' wirklich löschen?')) return;
+  var d = await req('DELETE','/admin/user',{userId:id});
+  if (d.error) { alert('Fehler: '+d.error); return; }
   await loadUsers();
 }
 
-// Corrections
+// ── CORRECTIONS ────────────────────────────────────────────────────────
 function toggleCorrForm() {
   var f = document.getElementById('corrForm');
-  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  f.style.display = f.style.display==='none'?'block':'none';
+  if (f.style.display==='block') { uploadedImages=[]; renderImgPreviews(); }
 }
 
-async function loadCorr() {
-  try {
-    var d = await req('GET', '/admin/corrections');
-    var el = document.getElementById('corrBody');
-    if (!d.corrections || !d.corrections.length) { el.innerHTML = '<div class="empty">Noch keine Einträge.</div>'; return; }
-    var t = document.createElement('table');
-    t.innerHTML = '<thead><tr><th>PRODUKT</th><th>SERIENNR.</th><th>PRIVATPREIS</th><th>AUKTION</th><th>ANMERKUNG</th><th>QUELLE</th><th></th></tr></thead>';
-    var tb = document.createElement('tbody');
-    d.corrections.forEach(function(c) {
-      var tr = document.createElement('tr');
-      var cells = [
-        '<strong style="color:#E0D5C5">'+esc(c.product)+'</strong>',
-        c.serialFrom ? c.serialFrom+(c.serialTo&&c.serialTo!==c.serialFrom?' – '+c.serialTo:'') : '–',
-        c.mintPrice ? c.mintPrice.toLocaleString('de-DE')+' €' : '–',
-        c.auctionLow ? c.auctionLow.toLocaleString('de-DE')+'–'+c.auctionHigh.toLocaleString('de-DE')+' €' : '–',
-        '<span style="color:#666;font-size:.7rem">'+esc(c.notes||'–')+'</span>',
-        '<span style="color:#555;font-size:.7rem">'+esc(c.source||'–')+'</span>',
-      ];
-      cells.forEach(function(h) { var td = document.createElement('td'); td.innerHTML = h; tr.appendChild(td); });
-      var tdBtn = document.createElement('td');
-      var btn = document.createElement('button'); btn.className = 'btn btn-red'; btn.textContent = '✕'; btn.style.padding = '3px 8px';
-      btn.onclick = (function(cid){ return function(){ delCorr(cid); }; })(c.id);
-      tdBtn.appendChild(btn); tr.appendChild(tdBtn);
-      tb.appendChild(tr);
-    });
-    t.appendChild(tb); el.innerHTML = ''; el.appendChild(t);
-  } catch(e) {}
+// Image upload
+function handleImgUpload(e) {
+  var files = Array.from(e.target.files);
+  var remaining = 5 - uploadedImages.length;
+  files.slice(0, remaining).forEach(function(file) {
+    if (file.size > 2*1024*1024) { alert(file.name + ' ist zu groß (max 2MB).'); return; }
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var dataUrl = ev.target.result;
+      var b64 = dataUrl.split(',')[1];
+      uploadedImages.push({dataUrl:dataUrl, base64:b64, mime:file.type});
+      renderImgPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+}
+
+// Drag & drop
+var dropEl = document.getElementById('imgDrop');
+dropEl.addEventListener('dragover', function(e){ e.preventDefault(); dropEl.style.borderColor='#C8A97E'; });
+dropEl.addEventListener('dragleave', function(){ dropEl.style.borderColor='#2A2A2A'; });
+dropEl.addEventListener('drop', function(e) {
+  e.preventDefault(); dropEl.style.borderColor='#2A2A2A';
+  var files = Array.from(e.dataTransfer.files).filter(function(f){ return f.type.startsWith('image/'); });
+  var fakeEvt = {target:{files:files,value:''}};
+  handleImgUpload(fakeEvt);
+});
+
+function renderImgPreviews() {
+  var el = document.getElementById('imgPreviews');
+  el.innerHTML = '';
+  uploadedImages.forEach(function(img, i) {
+    var wrap = document.createElement('div'); wrap.className = 'img-preview-wrap';
+    var im = document.createElement('img'); im.src = img.dataUrl; im.onclick = function(){ openLightbox(img.dataUrl); };
+    var del = document.createElement('button'); del.className = 'del-img'; del.textContent = '×';
+    del.onclick = function(e){ e.stopPropagation(); uploadedImages.splice(i,1); renderImgPreviews(); };
+    wrap.appendChild(im); wrap.appendChild(del); el.appendChild(wrap);
+  });
+  var txt = document.querySelector('.img-drop-txt');
+  if (txt) txt.style.display = uploadedImages.length >= 5 ? 'none' : 'block';
+}
+
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
 }
 
 async function saveCorr() {
   var prod = document.getElementById('cProd').value.trim();
-  if (!prod) { alert('Produktbezeichnung ist Pflicht.'); return; }
-  var d = await req('POST', '/admin/corrections', {
-    product: prod,
-    source:      document.getElementById('cSrc').value.trim(),
-    serialFrom:  parseInt(document.getElementById('cSfrom').value)||null,
-    serialTo:    parseInt(document.getElementById('cSto').value)||null,
-    mintPrice:   parseInt(document.getElementById('cPrice').value)||null,
-    auctionLow:  parseInt(document.getElementById('cAlow').value)||null,
-    auctionHigh: parseInt(document.getElementById('cAhigh').value)||null,
-    notes:       document.getElementById('cNote').value.trim(),
-  });
-  if (d.error) { alert('Fehler: ' + d.error); return; }
-  ['cProd','cSrc','cSfrom','cSto','cPrice','cAlow','cAhigh','cNote'].forEach(function(id){ document.getElementById(id).value=''; });
-  toggleCorrForm();
-  await loadCorr();
+  if (!prod) { alert('Produktbezeichnung ist Pflichtfeld.'); return; }
+  var matAltRaw = document.getElementById('cMatAlt').value.trim();
+  var matAlt = matAltRaw ? matAltRaw.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+  var payload = {
+    product:    prod,
+    variant:    document.getElementById('cVariant').value.trim()||null,
+    variantDesc:document.getElementById('cVarDesc').value.trim()||null,
+    materialNr: document.getElementById('cMatNr').value.trim()||null,
+    materialNrAlt: matAlt,
+    serialFrom: parseInt(document.getElementById('cSfrom').value)||null,
+    serialTo:   parseInt(document.getElementById('cSto').value)||null,
+    priceFrom:  parseInt(document.getElementById('cPfrom').value)||null,
+    priceTo:    parseInt(document.getElementById('cPto').value)||null,
+    mintPrice:  parseInt(document.getElementById('cPrice').value)||null,
+    auctionLow: parseInt(document.getElementById('cAlow').value)||null,
+    auctionHigh:parseInt(document.getElementById('cAhigh').value)||null,
+    source:     document.getElementById('cSrc').value.trim()||null,
+    notes:      document.getElementById('cNote').value.trim()||null,
+    images:     uploadedImages.map(function(img){ return {base64:img.base64, mime:img.mime}; }),
+  };
+  var d = await req('POST','/admin/corrections',payload);
+  if (d.error) { alert('Fehler: '+d.error); return; }
+  ['cProd','cVariant','cVarDesc','cMatNr','cMatAlt','cSfrom','cSto','cPfrom','cPto','cPrice','cAlow','cAhigh','cSrc','cNote']
+    .forEach(function(id){ document.getElementById(id).value=''; });
+  uploadedImages=[]; renderImgPreviews();
+  toggleCorrForm(); await loadCorr();
+}
+
+async function loadCorr() {
+  try {
+    var d = await req('GET','/admin/corrections');
+    var el = document.getElementById('corrBody');
+    if (!d.corrections||!d.corrections.length) {
+      el.innerHTML = '<div class="empty">Noch keine Einträge. Füge Korrekturen hinzu um die KI-Genauigkeit zu verbessern.</div>';
+      return;
+    }
+    el.innerHTML = '';
+    d.corrections.forEach(function(c) {
+      var card = document.createElement('div'); card.className = 'corr-card';
+
+      // Header
+      var hdr = document.createElement('div'); hdr.className = 'corr-card-header';
+      var titleWrap = document.createElement('div');
+      var title = document.createElement('div'); title.className = 'corr-card-title';
+      title.textContent = c.product + (c.variant ? ' · ' + c.variant : '');
+      var meta = document.createElement('div'); meta.className = 'corr-card-meta';
+      var metaParts = [];
+      if (c.materialNr) metaParts.push('Mat.-Nr: ' + c.materialNr + (c.materialNrAlt&&c.materialNrAlt.length?' / '+c.materialNrAlt.join(', '):''));
+      if (c.serialFrom) metaParts.push('Ser: ' + c.serialFrom + (c.serialTo?' – '+c.serialTo:''));
+      if (c.source) metaParts.push(c.source);
+      meta.textContent = metaParts.join(' · ');
+      titleWrap.appendChild(title); titleWrap.appendChild(meta);
+      var delBtn = mkBtn('✕ LÖSCHEN','btn-red',(function(id){return function(){delCorr(id);};})(c.id));
+      hdr.appendChild(titleWrap); hdr.appendChild(delBtn);
+      card.appendChild(hdr);
+
+      // Variant desc
+      if (c.variantDesc) {
+        var vd = document.createElement('div');
+        vd.style.cssText = 'font-size:.73rem;color:#888;margin-bottom:6px';
+        vd.textContent = c.variantDesc; card.appendChild(vd);
+      }
+
+      // Tags: prices
+      var tags = document.createElement('div'); tags.className = 'corr-tags';
+      if (c.priceFrom||c.priceTo) {
+        var t1 = document.createElement('span'); t1.className = 'corr-tag corr-price';
+        t1.textContent = 'Privatpreis: ' + (c.priceFrom?fmtEur(c.priceFrom):'') + (c.priceTo?' – '+fmtEur(c.priceTo):'');
+        tags.appendChild(t1);
+      }
+      if (c.mintPrice) {
+        var t2 = document.createElement('span'); t2.className = 'corr-tag corr-price';
+        t2.textContent = 'Referenz A-: ' + fmtEur(c.mintPrice); tags.appendChild(t2);
+      }
+      if (c.auctionLow) {
+        var t3 = document.createElement('span'); t3.className = 'corr-tag corr-auction';
+        t3.textContent = 'Auktion: ' + fmtEur(c.auctionLow) + ' – ' + fmtEur(c.auctionHigh); tags.appendChild(t3);
+      }
+      if (tags.children.length) card.appendChild(tags);
+
+      // Notes
+      if (c.notes) {
+        var notes = document.createElement('div');
+        notes.style.cssText = 'font-size:.72rem;color:#666;margin-top:6px';
+        notes.textContent = c.notes; card.appendChild(notes);
+      }
+
+      // Images
+      if (c.images&&c.images.length) {
+        var imgs = document.createElement('div'); imgs.className = 'corr-card-imgs';
+        c.images.forEach(function(img) {
+          var im = document.createElement('img');
+          im.src = 'data:'+img.mime+';base64,'+img.base64;
+          im.onclick = function(){ openLightbox(im.src); };
+          imgs.appendChild(im);
+        });
+        card.appendChild(imgs);
+      }
+
+      el.appendChild(card);
+    });
+  } catch(e) { console.error(e); }
 }
 
 async function delCorr(id) {
   if (!confirm('Eintrag löschen?')) return;
-  await req('DELETE', '/admin/correction', { id: id });
-  await loadCorr();
+  await req('DELETE','/admin/correction',{id:id}); await loadCorr();
 }
 
-// Auto login if token exists
+// ── INIT ───────────────────────────────────────────────────────────────
 document.getElementById('adminPw').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
 if (adminToken) {
-  req('GET', '/admin/users').then(function(d){
+  req('GET','/admin/users').then(function(d){
     if (!d.error) showDashboard();
-    else { localStorage.removeItem('aaa_admin_token'); adminToken = ''; }
-  }).catch(function(){ localStorage.removeItem('aaa_admin_token'); adminToken = ''; });
+    else { localStorage.removeItem('aaa_admin_token'); adminToken=''; }
+  }).catch(function(){ localStorage.removeItem('aaa_admin_token'); adminToken=''; });
 }
 </script>
 </body>
