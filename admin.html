@@ -153,6 +153,23 @@ td{padding:9px 8px;border-bottom:1px solid #111;font-size:.78rem;vertical-align:
     </div>
   </div>
 
+  <!-- Backup/Restore -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">DATENSICHERUNG</span></div>
+    <div class="card-body">
+      <p style="font-size:.75rem;color:#888;font-family:Arial,sans-serif;margin-bottom:12px;line-height:1.6">
+        Railway l&ouml;scht Daten bei jedem Neustart. Sichere deine Korrekturdaten hier als JSON
+        und speichere sie als Railway Variable <code style="background:#1A1A1A;padding:2px 6px;border-radius:3px;color:#C8A97E">DB_CORRECTIONS</code>.
+      </p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="btn btn-green" onclick="backupData()">&#8681; BACKUP HERUNTERLADEN</button>
+        <button class="btn btn-gold2" onclick="document.getElementById('restoreFile').click()">&#8679; AUS DATEI WIEDERHERSTELLEN</button>
+        <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreFromFile(event)"/>
+      </div>
+      <div id="backupStatus" style="font-size:.75rem;font-family:Arial,sans-serif;color:#555"></div>
+    </div>
+  </div>
+
   <!-- Corrections -->
   <div class="card">
     <div class="card-header">
@@ -610,6 +627,38 @@ async function delCorr(id) {
 
 // ── INIT ───────────────────────────────────────────────────────────────
 document.getElementById('adminPw').addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+
+async function backupData() {
+  try {
+    var d = await req('GET', '/admin/backup');
+    if (d.error) { alert('Fehler: '+d.error); return; }
+    var blob = new Blob([JSON.stringify(d.corrections, null, 2)], {type:'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'leica_corrections_backup_'+new Date().toISOString().slice(0,10)+'.json';
+    a.click();
+    document.getElementById('backupStatus').innerHTML = '<span style="color:#4CAF50">&#10003; '+d.count+' Eintr&auml;ge gesichert. Jetzt als Railway Variable <strong>DB_CORRECTIONS</strong> speichern!</span>';
+    // Also show the JSON for copy-paste into Railway
+    var json = d.json;
+    document.getElementById('backupStatus').innerHTML += '<br><br><strong style="color:#C8A97E">Fuer Railway Variable DB_CORRECTIONS:</strong><br><textarea style="width:100%;height:80px;background:#0D0D0D;border:1px solid #252525;color:#888;font-size:.65rem;font-family:monospace;padding:6px;border-radius:4px;margin-top:4px" readonly>'+json+'</textarea>';
+  } catch(e) { alert('Fehler: '+e.message); }
+}
+
+async function restoreFromFile(e) {
+  var file = e.target.files[0]; if(!file) return;
+  var reader = new FileReader();
+  reader.onload = async function(ev) {
+    try {
+      var data = JSON.parse(ev.target.result);
+      var d = await req('POST', '/admin/restore', {corrections: data});
+      if (d.error) { alert('Fehler: '+d.error); return; }
+      document.getElementById('backupStatus').innerHTML = '<span style="color:#4CAF50">&#10003; '+d.count+' Eintr&auml;ge wiederhergestellt!</span>';
+      await loadCorr();
+    } catch(err) { alert('Fehler beim Lesen: '+err.message); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
 if (adminToken) {
   req('GET','/admin/users').then(function(d){
     if (!d.error) showDashboard();
