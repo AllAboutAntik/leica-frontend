@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- All About Antik Leica Price Intel v3.0 CLEAN -->
+<!-- All About Antik Leica Price Intel v3.1 - 20260529-0735 -->
 <html lang="de"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
@@ -8,6 +8,9 @@
 <meta name="apple-mobile-web-app-title" content="Leica Price Intel">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0A0A0A">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <link rel="manifest" href="manifest.json">
 <title>All About Antik - Leica Price Intel</title>
 <style>
@@ -1003,76 +1006,6 @@ async function analyzeImage() {
   } catch(e){showError('Verbindungsfehler: '+e.message);}
   finally{btn.disabled=false;btn.textContent='ERKENNEN';document.getElementById('scanStatus').style.display='none';}
 }
-
-// AUTH
-);
-}
-
-
-  var btn=document.getElementById('loginBtn');btn.disabled=true;btn.textContent='...';
-  try {
-    var r=await fetch(AUTH_BASE+'/auth/login',{
-      method:'POST',credentials:'include',
-      headers:{'content-type':'application/json'},
-      body:JSON.stringify({email:email,accessCode:code})
-    });
-    var d=await r.json();
-    if(!r.ok){showAuthMsg('loginMsg',d.error||'Fehler.','err');return;}
-    sessionToken=d.token;sessionUser=d.name;
-    saveToken(sessionToken,sessionUser);
-    showApp();
-  } catch(e){showAuthMsg('loginMsg','Verbindungsfehler: '+e.message,'err');}
-  finally{btn.disabled=false;btn.textContent='ANMELDEN';}
-}
-
-  var btn=document.getElementById('registerBtn');btn.disabled=true;btn.textContent='...';
-  try {
-    var r=await fetch(AUTH_BASE+'/auth/register',{
-      method:'POST',credentials:'include',
-      headers:{'content-type':'application/json'},
-      body:JSON.stringify({name:name,email:email,company:company,message:message})
-    });
-    var d=await r.json();
-    if(!r.ok){showAuthMsg('registerMsg',d.error||'Fehler.','err');return;}
-    showAuthMsg('registerMsg',d.message,'ok');
-    ['regName','regEmail','regCompany','regMessage'].forEach(function(id){
-      var el=document.getElementById(id);
-      if(el){el.value='';if(el.tagName==='TEXTAREA')el.textContent='';}
-    });
-  } catch(e){showAuthMsg('registerMsg','Verbindungsfehler: '+e.message,'err');}
-  finally{btn.disabled=false;btn.textContent='ZUGANG ANFRAGEN';}
-}
-}).catch(function(){});
-  sessionToken='';sessionUser='';clearToken();
-  document.getElementById('authOverlay').style.display='flex';
-  document.getElementById('userBar').style.display='none';
-  document.getElementById('results').style.display='none';
-  hideReferenceImages();
-}
-
-
-// KEYBOARD
-document.getElementById('query').addEventListener('keydown',function(e){if(e.key==='Enter')analyzeText();});
-document.getElementById('matNr').addEventListener('keydown',function(e){if(e.key==='Enter')analyzeMat();});
-document.getElementById('matNr').addEventListener('input',function(e){e.target.value=e.target.value.replace(/[^0-9]/g,'');});
-document.getElementById('loginEmail').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
-document.getElementById('loginCode').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
-
-// AUTO LOGIN CHECK
-(async function() {
-  if(sessionToken) {
-    try {
-      var r=await fetch(AUTH_BASE+'/auth/me',{credentials:'include',headers:{'Authorization':'Bearer '+sessionToken}});
-      var d=await r.json();
-      if(r.ok&&d.ok){sessionUser=d.name;showApp();return;}
-    } catch(e) {}
-  }
-  document.getElementById('authOverlay').style.display='flex';
-})();
-
-
-
-
 // ── AUTH ──────────────────────────────────────────────────────────────────
 function switchAuthTab(t) {
   ['login','register'].forEach(function(n){
@@ -1176,4 +1109,4 @@ document.getElementById('loginCode').addEventListener('keydown',function(e){if(e
 })();
 
 
-</script></script></body></html>
+</script></body></html>
