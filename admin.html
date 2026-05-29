@@ -153,22 +153,13 @@ td{padding:9px 8px;border-bottom:1px solid #111;font-size:.78rem;vertical-align:
     </div>
   </div>
 
-  <!-- Backup/Restore -->
+  <!-- Persistence Status -->
   <div class="card">
-    <div class="card-header"><span class="card-title">DATENSICHERUNG</span></div>
+    <div class="card-header"><span class="card-title">DATENPERSISTENZ</span></div>
     <div class="card-body">
-      <p style="font-size:.75rem;color:#888;font-family:Arial,sans-serif;margin-bottom:12px;line-height:1.6">
-        Korrekturdaten k&ouml;nnen bei Railway-Neustart verloren gehen.
-        Klicke nach dem Einpflegen neuer Daten auf <strong style="color:#C8A97E">Backup</strong> und speichere
-        den JSON-Text als Railway Variable <code style="background:#1A1A1A;padding:2px 6px;border-radius:3px;color:#C8A97E">DB_CORRECTIONS</code>
-        — dann bleiben die Daten dauerhaft erhalten.
-      </p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-        <button class="btn btn-green" onclick="backupData()">&#8681; BACKUP &amp; JSON ANZEIGEN</button>
-        <button class="btn" onclick="document.getElementById('restoreFile').click()">&#8679; AUS DATEI WIEDERHERSTELLEN</button>
-        <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreFromFile(event)"/>
+      <div id="persistStatus" style="font-size:.78rem;font-family:Arial,sans-serif;color:#888;line-height:1.7">
+        Pr&uuml;fe Upstash Redis Status &hellip;
       </div>
-      <div id="backupStatus" style="font-size:.75rem;font-family:Arial,sans-serif;color:#555"></div>
     </div>
   </div>
 
@@ -338,7 +329,26 @@ async function showDashboard() {
   await loadAll();
 }
 
-async function loadAll() { await loadKeyStatus(); await loadUsers(); await loadCorr(); }
+async function loadAll() { await loadKeyStatus(); await loadUsers(); await loadCorr(); await checkPersistence(); }
+
+async function checkPersistence() {
+  try {
+    var d = await req('GET', '/admin/backup');
+    var el = document.getElementById('persistStatus');
+    if (!el) return;
+    if (d.error) { el.innerHTML = '<span style="color:#EF5350">&#10007; Nicht eingeloggt</span>'; return; }
+    var hasUpstash = d.upstash;
+    if (hasUpstash) {
+      el.innerHTML = '<span style="color:#4CAF50">&#9679; Upstash Redis aktiv</span> &mdash; Daten werden automatisch gesichert.<br>' +
+        '<span style="color:#555">'+d.count+' Korrekturen persistent gespeichert.</span>';
+    } else {
+      el.innerHTML = '<span style="color:#FFC107">&#9679; Kein Upstash Redis</span> &mdash; Daten gehen bei Railway-Neustart verloren.<br>' +
+        '<span style="color:#555">Einrichtung: <a href="https://upstash.com" target="_blank" style="color:#C8A97E">upstash.com</a> &rarr; kostenloses Redis erstellen &rarr; zwei Railway Variables setzen:</span><br>' +
+        '<code style="background:#1A1A1A;padding:2px 6px;border-radius:3px;color:#C8A97E;font-size:.7rem">UPSTASH_REDIS_REST_URL</code> und ' +
+        '<code style="background:#1A1A1A;padding:2px 6px;border-radius:3px;color:#C8A97E;font-size:.7rem">UPSTASH_REDIS_REST_TOKEN</code>';
+    }
+  } catch(e) {}
+}
 
 // ── API KEY ────────────────────────────────────────────────────────────
 async function loadKeyStatus() {
