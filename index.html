@@ -437,7 +437,91 @@ const MARGINS = [
   {label:"25%",value:0.25,desc:"Standard"},
   {label:"30%",value:0.30,desc:"Aggressiv"},
 ];
-const MAT_DB = {"20200":"Leica M11 (schwarz)","20201":"Leica M11 (silber)","20209":"Leica M11 Monochrom","20213":"Leica M11-P (schwarz)","20214":"Leica M11-P (silber)","20021":"Leica M10 (schwarz)","20000":"Leica M10 (silber)","10880":"Leica Q2","10892":"Leica Q2 Monochrom","19180":"Leica Q3","19195":"Leica Q3 43","10850":"Leica SL2","10854":"Leica SL2-S","11166":"Summilux-M 50mm f/1.4 ASPH","11728":"Summilux-M 35mm f/1.4 ASPH","11602":"Summicron-M 50mm f/2","11604":"Summicron-M 35mm f/2 ASPH","11695":"Noctilux-M 50mm f/0.95 ASPH","11186":"Elmarit-M 28mm f/2.8 ASPH","11629":"APO-Summicron-M 50mm f/2 ASPH","16021":"Leica Sofort","10916":"Leica D-Lux 8"};
+const MAT_DB = {
+  // ── Leica M Bodies ────────────────────────────────────────────────────────
+  "10370":"Leica M3","10400":"Leica M3","10370":"Leica M3 (chrom)","10371":"Leica M3 (schwarz)",
+  "10301":"Leica M2","10302":"Leica M2","10303":"Leica M2",
+  "10310":"Leica M4","10311":"Leica M4","10312":"Leica M4-P","10313":"Leica M4-2",
+  "10401":"Leica M5","10402":"Leica M5","10403":"Leica M5",
+  "10410":"Leica M6","10411":"Leica M6","10412":"Leica M6 TTL","10413":"Leica M6 TTL",
+  "10419":"Leica M6 J (Jubilaumsmodell)",
+  "10440":"Leica M7","10441":"Leica M7","10442":"Leica M7 0.58","10443":"Leica M7 0.85",
+  "10450":"Leica MP (schwarz)","10451":"Leica MP (silber)","10452":"Leica MP 0.58","10453":"Leica MP 0.72","10454":"Leica MP 0.85",
+  "10770":"Leica M8 (schwarz)","10771":"Leica M8 (silber)","10772":"Leica M8.2 (schwarz)","10773":"Leica M8.2 (silber)",
+  "10702":"Leica M9 (schwarz)","10703":"Leica M9 (silber)","10704":"Leica M9-P",
+  "10716":"Leica M Monochrom (M9)","10717":"Leica M Monochrom (M9)",
+  "10720":"Leica M (Typ 240, schwarz)","10721":"Leica M (Typ 240, silber)","10722":"Leica M-E (Typ 220)",
+  "10728":"Leica M Monochrom (Typ 246)","10729":"Leica M Monochrom (Typ 246)",
+  "10930":"Leica M10 (schwarz)","10931":"Leica M10 (silber)","10932":"Leica M10-P (schwarz)","10933":"Leica M10-P (silber)",
+  "20000":"Leica M10 Monochrom","20001":"Leica M10-R (schwarz)","20002":"Leica M10-R (silber)",
+  "20200":"Leica M11 (schwarz)","20201":"Leica M11 (silber)","20209":"Leica M11 Monochrom",
+  "20213":"Leica M11-P (schwarz)","20214":"Leica M11-P (silber/weiss)",
+  // ── Leica Q / SL ─────────────────────────────────────────────────────────
+  "19001":"Leica Q (Typ 116)","19002":"Leica Q (Typ 116)",
+  "19050":"Leica Q2","19051":"Leica Q2","19053":"Leica Q2 Monochrom","19054":"Leica Q2 Reporter",
+  "19180":"Leica Q3","19183":"Leica Q3 43",
+  "10850":"Leica SL (Typ 601)","10851":"Leica SL (Typ 601)",
+  "10881":"Leica SL2","10882":"Leica SL2","10885":"Leica SL2-S",
+  // ── Leica X / T / TL ─────────────────────────────────────────────────────
+  "18440":"Leica X1","18441":"Leica X2","18470":"Leica X-E","18450":"Leica X-U",
+  "18195":"Leica T (Typ 701, silber)","18197":"Leica T (Typ 701, schwarz)",
+  "18112":"Leica TL (silber)","18113":"Leica TL (schwarz)",
+  "18147":"Leica TL2 (silber)","18148":"Leica TL2 (schwarz)",
+  "18178":"Leica CL (silber)","18179":"Leica CL (schwarz)",
+  // ── Leica S System ───────────────────────────────────────────────────────
+  "10803":"Leica S2","10804":"Leica S (Typ 006)","10805":"Leica S (Typ 007)",
+  // ── M-Objektive Summicron ─────────────────────────────────────────────────
+  // Summicron-M 28mm
+  "11668":"Summicron-M 2/28mm ASPH (schwarz)","11669":"Summicron-M 2/28mm ASPH (silber)",
+  // Summicron-M 35mm
+  "11307":"Summicron-M 2/35mm V1 (8 Elemente, Brilliantsucher)","11108":"Summicron-M 2/35mm V2 (schwarz)","11109":"Summicron-M 2/35mm V2 (chrom)",
+  "11310":"Summicron-M 2/35mm V4 King of Bokeh (schwarz)","11311":"Summicron-M 2/35mm V4 King of Bokeh (silber/chrom)",
+  "11312":"Summicron-M 2/35mm ASPH (schwarz)","11313":"Summicron-M 2/35mm ASPH (silber)",
+  "11614":"Summicron-M 2/35mm ASPH FLE (schwarz)","11673":"Summicron-M 2/35mm ASPH FLE (silber)",
+  // Summicron-M 50mm
+  "11816":"Summicron-M 2/50mm (schwarz)","11817":"Summicron-M 2/50mm (silber)",
+  "11819":"Summicron-M 2/50mm (schwarz)","11820":"Summicron-M 2/50mm (silber)",
+  "11826":"Summicron-M 2/50mm (schwarz)","11829":"Summicron-M 2/50mm (chrom)",
+  // Summicron-M 90mm
+  "11136":"Summicron-M 2/90mm (schwarz)","11137":"Summicron-M 2/90mm (chrom)",
+  "11144":"Summicron-M 2/90mm APO (schwarz)","11145":"Summicron-M 2/90mm APO (silber)",
+  // ── M-Objektive Summilux ──────────────────────────────────────────────────
+  // Summilux-M 21mm
+  "11647":"Summilux-M 1.4/21mm ASPH (schwarz)","11648":"Summilux-M 1.4/21mm ASPH (silber)",
+  // Summilux-M 24mm
+  "11650":"Summilux-M 1.4/24mm ASPH (schwarz)","11651":"Summilux-M 1.4/24mm ASPH (silber)",
+  // Summilux-M 35mm
+  "11301":"Summilux-M 1.4/35mm V1 Stahlrand (schwarz)","11870":"Summilux-M 1.4/35mm ASPH (schwarz)","11728":"Summilux-M 1.4/35mm ASPH (schwarz FLE)",
+  // Summilux-M 50mm
+  "11114":"Summilux-M 1.4/50mm V1 (schwarz)","11115":"Summilux-M 1.4/50mm V1 (chrom)",
+  "11868":"Summilux-M 1.4/50mm ASPH (schwarz)","11891":"Summilux-M 1.4/50mm ASPH (silber)",
+  "11689":"Summilux-M 1.4/50mm ASPH (schwarz, neue Version)",
+  // Summilux-M 75mm
+  "11815":"Summilux-M 1.4/75mm (schwarz)","11814":"Summilux-M 1.4/75mm (silber)",
+  // Summilux-M 90mm  
+  "11623":"Summilux-M 1.5/90mm (schwarz)",
+  // ── M-Objektive Noctilux ──────────────────────────────────────────────────
+  "11820":"Noctilux-M 1/50mm V1 (f1.0, chrom)","11821":"Noctilux-M 1/50mm V1 (f1.0, schwarz)",
+  "11822":"Noctilux-M 0.95/50mm ASPH (schwarz)","11602":"Noctilux-M 0.95/50mm ASPH (schwarz)",
+  "11656":"Noctilux-M 1.25/75mm ASPH (schwarz)",
+  // ── M-Objektive Elmarit ───────────────────────────────────────────────────
+  "11803":"Elmarit-M 2.8/21mm ASPH (schwarz)","11135":"Elmarit-M 2.8/28mm (schwarz)","11804":"Elmarit-M 2.8/28mm ASPH (schwarz)",
+  "11831":"Elmarit-M 2.8/90mm (schwarz)","11832":"Elmarit-M 2.8/90mm (chrom)",
+  "11134":"Elmarit-M 2.8/135mm (schwarz)",
+  // ── M-Objektive Super-Elmar / Tri-Elmar ───────────────────────────────────
+  "11626":"Super-Elmar-M 3.4/21mm ASPH (schwarz)","11628":"Super-Elmar-M 3.4/21mm ASPH (silber)",
+  "11630":"Tri-Elmar-M 4/16-18-21mm ASPH (schwarz)",
+  // ── M-Objektive Voigtlander / Zeiss (haufig auf Leica) ───────────────────
+  // ── SL Objektive ──────────────────────────────────────────────────────────
+  "11180":"Summicron-SL 2/50mm ASPH","11184":"Summilux-SL 1.4/50mm ASPH",
+  "11182":"APO-Summicron-SL 2/75mm ASPH","11178":"APO-Summicron-SL 2/90mm ASPH",
+  // ── Leica R System ────────────────────────────────────────────────────────
+  "10058":"Leica R3","10062":"Leica R4","10065":"Leica R5","10068":"Leica R6","10069":"Leica R6.2",
+  "10070":"Leica R7","10081":"Leica R8","10082":"Leica R8 (titan)","10083":"Leica R9",
+  // ── Zubehor ───────────────────────────────────────────────────────────────
+  "14258":"Leica Visoflex","14272":"Leica Wetzlar Handgriff M","14496":"Leica Multifunktionshandgriff M10",
+  "16001":"Leica FOTOS App","18788":"Leica SF60 Blitz"
+};
 
 let activeCond="AB", activeMargin=0.25, lastResult=null, stream=null, capturedB64=null, capturedMime="image/jpeg";
 
