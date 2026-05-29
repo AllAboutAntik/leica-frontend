@@ -507,11 +507,7 @@ function esc2(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;")
 
 // Detect correct server URL (localhost on Mac, IP on iPhone)
 // Use same origin — works for localhost (http://localhost:3747) AND Railway (https://...)
-const API_BASE = (() => {
-  const o = window.location.origin;
-  if (!o || o === 'null' || o === 'file://') return 'http://localhost:3747';
-  return o; // On Railway this is https://leica-price-search-production.up.railway.app
-})();
+// API_BASE defined above
 console.log('API_BASE:', API_BASE);
 
 
