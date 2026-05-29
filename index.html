@@ -396,6 +396,20 @@ function clearToken() {
 var sessionToken = getStoredToken();
 var sessionUser  = getStoredUser();
 
+// ── UI HELPERS ────────────────────────────────────────────────────────────
+function showError(m){var b=document.getElementById("errorBox");b.innerHTML=m;b.style.display="block";}
+function hideError(){document.getElementById("errorBox").style.display="none";}
+function showInfo(m){var b=document.getElementById("infoBox");b.innerHTML=m;b.style.display="block";}
+function hideInfo(){document.getElementById("infoBox").style.display="none";}
+function switchTab(n){
+  ["text","mat","cam"].forEach(function(t){
+    document.getElementById("tab-"+t).classList.toggle("active",t===n);
+    document.getElementById("panel-"+t).classList.toggle("active",t===n);
+  });
+  if(n!=="cam")stopCamera();
+}
+function fmt(n){return n.toLocaleString("de-DE")+" €";}
+
 
 
 
@@ -605,6 +619,35 @@ const AUCTION_RECORDS = [
   {item:"Leica M6 TTL Black (2022 Neuauflage)",  price:3800,  house:"eBay DE",                               year:2024, note:"Neuauflage 2022, anhaltend gefragt"},
   {item:"Leica M-A (2014, Titan)",               price:8500,  house:"Leitz Photographica Auction Wetzlar",   year:2023, note:"Titan-Sonderedition, limitiert"},
 ];
+
+async function loadCorrections() {
+  try{
+    var r=await fetch(API_BASE+"/api/corrections",{headers:{"Authorization":"Bearer "+sessionToken}});
+    if(r.ok){var d=await r.json(); cachedCorrections=d.corrections||[];}
+  }catch(e){}
+}
+function correctionsPromptHint(q) {
+  if(!cachedCorrections.length) return "";
+  var ql=(q||"").toLowerCase();
+  var rel=cachedCorrections.filter(function(c){
+    if(!c) return false;
+    var mn=String(c.materialNr||"");
+    if(mn&&ql.includes(mn)) return true;
+    var words=(c.product||"").toLowerCase().split(" ").filter(function(w){return w.length>3;});
+    return words.some(function(w){return ql.includes(w);});
+  }).slice(0,5);
+  var use=rel.length?rel:cachedCorrections.slice(0,8);
+  var hint = "\n\nKORREKTURDATENBANK (HOECHSTE PRIORITAET):\n";
+  hint += use.map(function(c){
+    var s="- "+c.product+(c.variant?" ("+c.variant+")":"");
+    if(c.materialNr) s+=" ["+c.materialNr+(c.materialNrAlt&&c.materialNrAlt.length?"/"+c.materialNrAlt.join("/"):"")+"]";
+    if(c.priceFrom) s+=": "+c.priceFrom.toLocaleString("de-DE")+(c.priceTo?"-"+c.priceTo.toLocaleString("de-DE"):"")+" EUR";
+    else if(c.mintPrice) s+=": ca. "+c.mintPrice.toLocaleString("de-DE")+" EUR";
+    if(c.notes) s+=" | "+c.notes;
+    return s;
+  }).join("\n");
+  return hint;
+}
 
 function detectRarity(query, serialNum) {
   const q = (query || '').toLowerCase();
