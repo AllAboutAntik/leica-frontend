@@ -158,12 +158,14 @@ td{padding:9px 8px;border-bottom:1px solid #111;font-size:.78rem;vertical-align:
     <div class="card-header"><span class="card-title">DATENSICHERUNG</span></div>
     <div class="card-body">
       <p style="font-size:.75rem;color:#888;font-family:Arial,sans-serif;margin-bottom:12px;line-height:1.6">
-        Railway l&ouml;scht Daten bei jedem Neustart. Sichere deine Korrekturdaten hier als JSON
-        und speichere sie als Railway Variable <code style="background:#1A1A1A;padding:2px 6px;border-radius:3px;color:#C8A97E">DB_CORRECTIONS</code>.
+        Korrekturdaten k&ouml;nnen bei Railway-Neustart verloren gehen.
+        Klicke nach dem Einpflegen neuer Daten auf <strong style="color:#C8A97E">Backup</strong> und speichere
+        den JSON-Text als Railway Variable <code style="background:#1A1A1A;padding:2px 6px;border-radius:3px;color:#C8A97E">DB_CORRECTIONS</code>
+        — dann bleiben die Daten dauerhaft erhalten.
       </p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-        <button class="btn btn-green" onclick="backupData()">&#8681; BACKUP HERUNTERLADEN</button>
-        <button class="btn btn-gold2" onclick="document.getElementById('restoreFile').click()">&#8679; AUS DATEI WIEDERHERSTELLEN</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="btn btn-green" onclick="backupData()">&#8681; BACKUP &amp; JSON ANZEIGEN</button>
+        <button class="btn" onclick="document.getElementById('restoreFile').click()">&#8679; AUS DATEI WIEDERHERSTELLEN</button>
         <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="restoreFromFile(event)"/>
       </div>
       <div id="backupStatus" style="font-size:.75rem;font-family:Arial,sans-serif;color:#555"></div>
@@ -632,15 +634,24 @@ async function backupData() {
   try {
     var d = await req('GET', '/admin/backup');
     if (d.error) { alert('Fehler: '+d.error); return; }
+    // Download JSON file
     var blob = new Blob([JSON.stringify(d.corrections, null, 2)], {type:'application/json'});
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'leica_corrections_backup_'+new Date().toISOString().slice(0,10)+'.json';
+    a.download = 'leica_corrections_'+new Date().toISOString().slice(0,10)+'.json';
     a.click();
-    document.getElementById('backupStatus').innerHTML = '<span style="color:#4CAF50">&#10003; '+d.count+' Eintr&auml;ge gesichert. Jetzt als Railway Variable <strong>DB_CORRECTIONS</strong> speichern!</span>';
-    // Also show the JSON for copy-paste into Railway
-    var json = d.json;
-    document.getElementById('backupStatus').innerHTML += '<br><br><strong style="color:#C8A97E">Fuer Railway Variable DB_CORRECTIONS:</strong><br><textarea style="width:100%;height:80px;background:#0D0D0D;border:1px solid #252525;color:#888;font-size:.65rem;font-family:monospace;padding:6px;border-radius:4px;margin-top:4px" readonly>'+json+'</textarea>';
+    // Show copy-paste JSON with clear instructions
+    var status = document.getElementById('backupStatus');
+    status.innerHTML = 
+      '<div style="color:#4CAF50;margin-bottom:10px">&#10003; '+d.count+' Eintraege gesichert und heruntergeladen.</div>' +
+      '<div style="color:#C8A97E;font-weight:700;margin-bottom:6px">So Railway Variable setzen:</div>' +
+      '<ol style="color:#888;font-size:.72rem;line-height:1.8;margin-left:16px;margin-bottom:10px">' +
+      '<li>railway.app &rarr; amiable-patience &rarr; Leica-price-Search &rarr; Variables</li>' +
+      '<li>Raw Editor &rarr; folgende Zeile hinzufuegen:</li>' +
+      '</ol>' +
+      '<div style="font-size:.65rem;color:#555;margin-bottom:4px">DB_CORRECTIONS=</div>' +
+      '<textarea id="backupJson" style="width:100%;height:80px;background:#0D0D0D;border:1px solid #252525;color:#888;font-size:.62rem;font-family:monospace;padding:6px;border-radius:4px" readonly>'+d.json+'</textarea>' +
+      '<button onclick="document.getElementById('backupJson').select();document.execCommand('copy');this.textContent='Kopiert! ✓'" style="margin-top:6px;background:#C8A97E;color:#0A0A0A;border:none;border-radius:3px;padding:6px 12px;font-size:.65rem;font-weight:700;cursor:pointer">JSON KOPIEREN</button>';
   } catch(e) { alert('Fehler: '+e.message); }
 }
 
